@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="dragtable.css" />
     <link rel="stylesheet" type="text/css" href="tablednd.css" />
     <style>
-    .circle {
+        .circle {
         background-color: #D8CF49;
         border-radius: 50%;
         border: 1px solid black;
@@ -25,38 +25,36 @@
 </head>
 
 <body onLoad="buildHtmlTable('#demo',[],-1)">
-
     <form>
-Select the Dataset:
-<select id="mySelect">
-  <option value="NewsArticles">NewsArticles Dataset</option>
-  <option value="MovieScripts">MovieScripts Dataset</option>
-</select>
-<input type="button" onclick="getOption()" value="Click Me!">
-</form>
-
-
-
+        Select the Dataset:
+        <select id="mySelect">
+            <option value="NewsArticles">NewsArticles Dataset</option>
+            <option value="MovieScripts">MovieScripts Dataset</option>
+        </select>
+        <input type="button" onclick="getOption()" value="Click Me!">
+    </form>
     <table id="demo">
     </table>
     <div id="chart2"></div>
     <script>
-        var dataset = "NewsArticles";
-   function getOption() {
-    var obj = document.getElementById("mySelect");
-    dataset = obj.options[obj.selectedIndex].text;
-     $('#demo').fadeOut('slow');
+  
+    var dataset = "NewsArticles";
+
+    function getOption() {
+        var obj = document.getElementById("mySelect");
+        dataset = obj.options[obj.selectedIndex].text;
+        $('#demo').fadeOut('slow');
         $('#demo').empty();
         buildHtmlTable('#demo', [], -1);
         $('#demo').fadeIn('fast');
         localStorage.setItem('dataset', dataset);
-}
+    }
 
-            console.log(dataset);
+    console.log(dataset);
 
     function secondchart(topic) {
         var filepath = "news-data/topic-word-rank-2.json";
-        if(dataset == "MovieScripts Dataset"){
+        if (dataset == "MovieScripts Dataset") {
             filepath = "movie-data/topic-word-rank-1.json";
         }
         d3.json(filepath, function(data) {
@@ -228,11 +226,11 @@ Select the Dataset:
 
     function buildHtmlTable(selector, order, flag) {
         var filepath = "news-data/tutorial_conposition.csv";
-        console.log(dataset);
-        if(dataset == "MovieScripts Dataset"){
-            console.log("yayy");
+        if (dataset == "MovieScripts Dataset") {
             filepath = "movie-data/tutorial_conposition.csv";
         }
+        var timer = 0;
+        var delay = 500;
         d3.csv(filepath, function(myList) {
             var colorder, roworder = 0;
             if (flag == 0) {
@@ -259,35 +257,41 @@ Select the Dataset:
             }
 
             for (var i = 0; i < rows.length; i++) {
-                var row$ = $('<tr/>').on('dblclick', function(e) {
-                    $("#demo td").removeClass("highlight");
+                var prevent = false;
+                var row$ = $('<tr/>');
+               
+                var fileValue = myList[rows[i]][columns[0]];
+                var fileName = myList[rows[i]][columns[1]];
 
+                row$.append($('<td/>').html(fileValue));
+
+                row$.append($('<td/>').html(fileName))
+                    .click(function(event) {
+                        event.preventDefault();
+                        timer = setTimeout(function() {
+                            if (!prevent) {
+                        docName = fileName;
+                        setTimeout(documentClicked(fileName), 300000);
+                         }
+                            prevent = false;
+                        }, delay);
+                    });
+                 row$.on('dblclick', function(e) {
+                    e.preventDefault();
+                    clearTimeout(timer);
+                    prevent = true;
 
                     var clickedCell = $(e.target).closest("td");
                     row$.attr("id", "user" + i);
                     documentSelected(clickedCell.text(), myList);
                 });
-                var fileValue = myList[rows[i]][columns[0]];
-                var fileName = myList[rows[i]][columns[1]];
-
-                row$.append($('<td/>').html(fileValue))
-                    .click(function() {
-                        docName = fileName;
-                        setTimeout(documentClicked(fileName), 3000);
-
-                    });
-                row$.append($('<td/>').html(fileName))
-                    .click(function() {
-                        docName = fileName;
-                        setTimeout(documentClicked(fileName), 3000);
-
-                    });;
 
 
                 for (var colIndex = 2; colIndex < columns.length; colIndex++) {
                     var colhead = columns[colIndex];
 
                     var numValue = myList[rows[i]][columns[colIndex]];
+                    
                     row$.append($('<td/>')
                         .append($('<div/>')
                             .attr("class", "circle")
@@ -298,10 +302,21 @@ Select the Dataset:
             }
             var ths = $('th').each(function() {
                 var ths = this;
+                var prevent = false;
+
+                ths.addEventListener('click', function(e) {
+                    timer = setTimeout(function() {
+                        if (!prevent) {
+                            secondchart($(e.target).first().html());
+                        }
+                        prevent = false;
+                    }, delay);
+                });
                 ths.addEventListener('dblclick', function(e) {
+                    clearTimeout(timer);
+                    prevent = true;
                     topicSelected($(e.target).first().html(), myList);
                 });
-                ths.addEventListener('click', function(e) { secondchart($(e.target).first().html()) });
 
             });
 
@@ -342,13 +357,14 @@ Select the Dataset:
     }
 
     function documentClicked(docName) {
-        console.log(docName);
+
         doctosend = docName;
         localStorage.setItem('current_document', doctosend);
         window.open('textviewer.html')
     }
 
     function documentSelected(docName, myList) {
+        console.log(docName);
 
         selected_document = docName;
         arrToSort = [];
@@ -378,6 +394,8 @@ Select the Dataset:
                         tvalues[tvalues.indexOf(newarr[i])] = -1;
                     }
                 }
+
+                console.log(index);
                 console.log(tempdict);
                 console.log(myList[0]);
             }
@@ -420,7 +438,6 @@ Select the Dataset:
         $('#demo').fadeIn('fast');
 
     }
-
     </script>
 </body>
 
