@@ -3,9 +3,9 @@
 <html>
 
 <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="jquery.min.js"></script>
+    <script src="jquery-ui.min.js"></script>
+    <script src="d3.v3.min.js"></script>
     <script src="jquery.dragtable.js"></script>
     <script src="jquery.tablednd.js"></script>
     <link rel="stylesheet" type="text/css" href="dragtable.css" />
@@ -291,7 +291,7 @@
                     var colhead = columns[colIndex];
 
                     var numValue = myList[rows[i]][columns[colIndex]];
-                    
+
                     row$.append($('<td/>')
                         .append($('<div/>')
                             .attr("class", "circle")
