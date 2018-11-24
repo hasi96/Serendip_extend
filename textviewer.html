@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+	d4=d3
+</script>
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+
+<style>
+    body {
+		  font: 10px sans-serif;
+		}
+		.bar rect {
+		  fill: inherit;
+		}
+		.bar text.value {
+		  fill: white;
+		}
+		.axis {
+		  shape-rendering: crispEdges;
+		}
+		.axis path {
+		  fill: none;
+		}
+		.x.axis line {
+		  stroke: #fff;
+		  stroke-opacity: .8;
+		}
+		.y.axis path {
+		  stroke: black;
+		}
+				 .below {
+		  font-size: 10pt;
+		  font-weight: bold;
+		  font-family: Arial, sans-serif;
+		}
+		div.ex1 {
+			background-color: transparent;
+			
+			overflow: auto;
+		}
+		
+		#list  p {
+			font: arial;
+			font-size: 14px;
+			background-color: yellow ;
+		}
+		path { 
+			stroke: steelblue;
+			stroke-width: 2;
+			fill: none;
+		}
+
+		.axis path,
+		.axis line {
+			fill: none;
+			stroke: grey;
+			stroke-width: 1;
+			shape-rendering: crispEdges;
+		}
+
+		.legend {
+			font-size: 16px;
+			font-weight: bold;
+			text-anchor: middle;
+		}
+		   
+.line {
+  fill: none;
+  opacity: 0.9;
+  stroke-width: 1.5px;
+}
+
+.line--x {
+  stroke: steelblue;
+}
+  
+.line--y {
+  stroke: coral;
+}
+
+.line--z {
+  stroke: purple;
+}
+  
+.line--fade {
+  stroke-width: 1.4px;
+  opacity: 0.5;  
+}
+  
+.line--hover {
+  stroke-width: 2px;
+  opacity: 1.0;
+}
+  
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  pointer-events: none;
+  
+  line-height: 1;
+  font-weight: bold;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border-radius: 2px;
+}
+  
+/* Creates a small triangle extender for the tooltip */
+div.tooltip:after {
+  clear;
+  box-sizing: border-box;
+  display: inline;
+  font-size: 11px;
+  top: 95%;
+  left: 50%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.6);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+	}
+	</style>
+<script>
+    function getUrlVars()
+	{
+	    var vars = [], hash;
+	    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	    for(var i = 0; i < hashes.length; i++)
+	    {
+	        hash = hashes[i].split('=');
+	        vars.push(hash[0]);
+	        vars[hash[0]] = hash[1];
+	    }
+		var1=vars["search"]+'.txt';
+		console.log(window.location.href);
+	    return vars;
+		
+	}
+
+	</script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<body>
+    <table>
+        <tr>
+            <td>
+                <div id="sidetable" class="ex1" style="width:250px">
+                </div>
+            </td>
+            <td>
+                <button type="button" onclick="getSummary()">Generate Summary and Compare!</button>
+                <div id="read" class="ex1">
+                    <script>
+                    //loading document here
+                    $(document).ready(function read1() {
+                        //var id = "news-data/news/"+getUrlVars()["search"]+".txt";
+                        var id = "news-data/news/" + localStorage['current_document'];
+                        if(localStorage['dataset'] == "MovieScripts Dataset"){
+                            id = "movie-data/movie/" + localStorage['current_document'];
+                        }
+                        $.get(id, function(data) {
+                            var mydata = data;
+
+                            words = mydata.split(' ');
+                            for (i = 0; i < words.length; i++) {
+                                var btn = document.createElement("span");
+
+                                var t = document.createTextNode(words[i]);
+                                btn.appendChild(t);
+
+                                btn.onclick = function(e) { return rankviewinp($(e.target)) };
+                                document.getElementById("read").appendChild(btn).append(' ');
+
+                            };
+                        }, "text");
+                    });
+
+                    function rankviewinp(d) {
+                        console.log("yo");
+                        var word = Object.values(Object.values(d)[0].childNodes)[0].data;
+                        wordtosend = word.trim();
+                        localStorage.setItem('wordToRV', wordtosend);
+                        localStorage.setItem('wordclicked', true);
+                        window.open('rankviewer.html')
+                    };
+                    </script>
+                </div>
+                <div id="summary">
+                </div>
+            </td>
+            <td>
+                <div id="rightgraph" style="width:300px">
+                </div>
+            </td>
+        </tr>
+</body>
+<script>
+function getSummary() {
+    return linechart();
+}
+//fetching url value here
+var id = getUrlVars()["search"];
+
+//first graph
+
+var m = [-55, 0, 0, 0],
+    w = 230 - m[1] - m[3],
+    h = 430 - m[0] - m[2];
+var format = d3.format(",.0f");
+var x = d3.scale.linear().range([0, w]),
+    y = d3.scale.ordinal().rangeRoundBands([0, h], .1);
+var xAxis = d3.svg.axis().scale(x).orient("top").tickSize(-h),
+    yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
+var svg = d3.select("#sidetable").append("svg")
+    .attr("width", w + m[1] + m[3])
+    .attr("height", h + m[0] + m[2])
+    .append("g")
+    .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+
+
+var curdocdata = [];
+var filepath =  "news-data/tutorial_conposition.csv";
+if(localStorage['dataset'] == "MovieScripts Dataset"){
+filepath = "movie-data/tutorial_conposition.csv";
+}
+d3.csv(filepath, function(error, data) {
+    var color = d3.scale.linear().domain([0, Object.keys(data[0]).length - 1])
+        .interpolate(d3.interpolateHcl)
+        .range([d3.rgb("#007AFF"), d3.rgb('#FFF500')]);
+    if (error) throw error;
+    id = localStorage['current_document'];
+
+    // Parse numbers, and sort by value.
+
+    data.forEach(function(d) {
+        if (d.filename == id) {
+            
+            d = Object.entries(d).slice(2, ).map(([key, value]) => ({ key, value }));
+            dunsort = d;
+            curdocdata = dunsort;
+
+            d = d.sort(function(a, b) {
+                return d3.ascending(a.value, b.value);
+            });
+
+
+            var margin = {
+                top: 15,
+                right: 25,
+                bottom: 15,
+                left: 60
+            };
+
+            var width = 960 - margin.left - margin.right,
+                height = 500 - margin.top - margin.bottom;
+
+
+
+            var x = d3.scale.linear()
+                .range([0, 150])
+                .domain([0, d3.max(d, function(e) {
+                    return e.value;
+                })]);
+
+            var y = d3.scale.ordinal()
+                .rangeRoundBands([height, 100], .1)
+                .domain(d.map(function(e) {
+                    return e.key;
+                }));
+
+            //make y axis to show bar names
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                //no tick marks
+                .tickSize(0)
+                .orient("left");
+
+            var gy = svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+
+            var bar = svg.selectAll("g.bar")
+                .data(d)
+                .enter()
+                .append("g")
+
+            //append rects
+            bar.append("rect")
+                .attr("class", "bar")
+                .attr("y", function(d) {
+                    return y(d.key);
+                })
+                .attr("height", y.rangeBand() / 2)
+                .attr("x", 0)
+                .attr("width", function(d) {
+                    return x(d.value);
+                })
+                .attr("style", function(d, i) {
+                    d.color = color(i);
+                    return "fill: " + color(i);
+
+                });
+
+            //add a value label to the right of each bar
+            bar.append("text")
+                .data(dunsort)
+                .attr("class", "label")
+                //y position of the label is halfway down the bar
+                .attr("y", function(d) {
+                    return y(d.key) + y.rangeBand() / 2 + 4;
+                })
+                //x position is 3 pixels to the right of the bar
+                .attr("x", function(d) {
+                    return x(d.value) + 3;
+                })
+                .text(function(d) {
+                    return d.key;
+                });
+
+            // Set the scale domain.
+            /* x.domain([0, d[0]]);
+
+		  var y = d3.scale.ordinal()
+            .rangeRoundBands([1000, 0], .1)
+            .domain(d.map(function (d) {
+                return d.value;
+            }));
+		  console.log(d[0]);
+		  var bar = svg.selectAll("g.bar")
+			  .data(d)
+			.enter().append("g")
+			  .attr("class", "bar")
+			  .attr("transform", function(d) {  console.log(y(d.value)); return "translate(0," + y(d.value) + ")"; });
+			  console.log(y.rangeBand()/1.5);
+		  bar.append("rect")
+		  	.attr("x",100)
+		  	.attr("y",100)
+			  .attr("width", function(d) {if(d.filename==id) return x(d.value/3); })
+			  .attr("height", y.rangeBand()/1.5)
+			  
+
+		  
+		bar.append("text")
+			.attr("class", "below")
+			.attr("x", 60)
+			.attr("dy", "2em")
+			.attr("text-anchor", "left").style("fill", "#000000")
+			.text(function(d,i) {  return d.key; });
+			//highlighting doc text 
+			*/
+            var path2 = "news-data/word-topic-count.csv";
+            if(localStorage['dataset'] == "MovieScripts Dataset"){
+                path2 = "movie-data/word-topic-count-1.csv";
+            }
+            d3.csv(path2, function(error, data) {
+                topic_word_count = [];
+                data.forEach(function(d) {
+
+
+                    var datanew = Object.values(d)[0].split(" ");
+                    //console.log(datanew);
+                    var word = datanew[1];
+                    for (var i = 2; i < datanew.length; i++) {
+                        if (datanew[i].length > 0)
+                            topic_word_count.push([word, datanew[i].split(":")[0], datanew[i].split(":")[1]]);
+                    }
+
+
+                });
+
+                bar.selectAll("rect")
+                    .on("click", function(d) {
+
+                        selected_doc = id.split(".")[0];
+                        selected_topic = d.key;
+                        var wordlist = [];
+                        var op = 0.1;
+                        for (var i = 0; i < topic_word_count.length; i++) {
+                            if (("topic" + topic_word_count[i][1]) == selected_topic) {
+
+                                var s = d.word;
+                                var div = document.getElementById('read').innerHTML;
+                                var regex = new RegExp('\<span\>(' + topic_word_count[i][0] + ') \<\/span\>', 'ig');
+                                if (div.match(regex)) {
+                                    var matches = div.match(regex);
+                                    div = div.replace(regex, '<span onclick="(function(e){ return rankviewinp($(e.target)); })(event); " style="background-color:' + d.color + '">$1 </span>');
+                                    document.getElementById("read").innerHTML = div;
+
+                                }
+                            }
+                        }
+                    });
+
+            });
+
+
+        }
+    });
+
+});
+
+function linechart() {
+    console.log("hi");
+
+    var sumid = "news-data/news-summary/" + localStorage['current_document'];
+     if(localStorage['dataset'] == "MovieScripts Dataset"){
+                            sumid = "movie-data/movie-summary/" + localStorage['current_document'] + ".txt";
+                        }
+    $.get(sumid, function(data) {
+        document.getElementById("summary").innerHTML = "<h5>Generated Abstractive Summary</h5>" + data;
+    }, "text");
+
+    var curdocsum = [];
+    var path3 = "news-data/news-summary-topics.csv";
+    if(localStorage['dataset'] == "MovieScripts Dataset"){
+            path3 = "movie-data/movie-summary-topics.csv";
+
+                        }
+    d3.csv(path3, function(error, data) {
+    	data.forEach(function(d) {
+        if (d.filename == localStorage['current_document']) {
+         d = Object.entries(d).slice(2, ).map(([key, value]) => ({ key, value }));
+        	curdocsum = d;
+        }});
+	
+  
+     curdocsum = curdocsum.sort(function(a, b) {
+                return d3.ascending(a.key.slice(5,), b.key.slice(5,));
+            });
+     curdocdata = curdocdata.sort(function(a, b) {
+                return d3.ascending(a.key.slice(5,), b.key.slice(5,));
+            });
+
+       console.log(curdocsum);
+    console.log(curdocdata);
+    secondchartdata = [];
+    for(var j=0;j<curdocdata.length;j++){
+    	secondchartdata.push({ tick : j ,actual_document: Object.values(curdocdata)[j].value, gen_summary: Object.values(curdocsum)[j].value});
+    }
+    console.log(secondchartdata);
+    // set the dimensions and margins of the graph
+    var margin = { top: 20, right: 40, bottom: 30, left: 50 },
+        width = 500 - margin.left - margin.right,
+        height = 960 - margin.top - margin.bottom;
+
+    // the different dimensions in the data
+    var dims = ['actual_document', 'gen_summary'];
+
+    // set x-range
+    var Y = d4.scaleLinear().range([height, 0]);
+
+    // set the y-ranges
+    var x = {}
+    dims.forEach(dim => {
+        x[dim] = d4.scaleLinear().range([0, width]);
+    });
+
+    // define the line functions for each dimension
+    var lines = {}
+    dims.forEach(dim => {
+        lines[dim] = d4.line()
+            .y(d => Y(d.tick))
+            .x(d => x[dim](d[dim]));
+    });
+
+    // tooltip
+    var div = d3.select("#rightgraph").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    // create the svg object
+    var svg = d3.select("#rightgraph").append("svg")
+        .attr("height", height )
+        .append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+    // process the data
+   
+
+        // Parse the data
+        secondchartdata.forEach(d => {
+            d.tick = +d.tick;
+            d.actual_document = +d.actual_document;
+            d.gen_summary = +d.gen_summary;
+        });
+        // Set domain scales
+        Y.domain(d3.extent(secondchartdata, d => d.tick));
+        for (var dim of dims) {
+            x[dim].domain(d3.extent(secondchartdata, d => d[dim]));
+        }
+
+        // Draw Paths
+        for (var dim of dims) {
+            svg.append("path")
+                .data([secondchartdata])
+                .attr("class", "line line--" + dim)
+                .attr("name", dim)
+                .attr("d", d => lines[dim](d))
+                .on("mouseover", mouseover)
+                .on("mouseout", mouseout)
+        }
+
+        // Add the X Axis
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d4.axisBottom(Y));
+
+        // // Add the Y Axis (Note how we only need one axis)
+        // svg.append("g")
+        //     .attr("class", "axisSteelBlue")
+        //     .call(d3.axisLeft(x['x']));
+
+        // mouseover function
+        function mouseover(d) {
+            var name = d3.select(this).attr("name");
+
+            // highlight this line, fade other lines
+            d3.selectAll(".line").classed("line--hover", (d, i) => {
+                return (name === dims[i]);
+            }).classed("line--fade", (d, i) => {
+                return (name !== dims[i]);
+            });
+
+            // display tooltip
+            div.transition()
+                .duration(200)
+                .style("opacity", 1);
+            div.html("accelerometer - " + name)
+                .style("left", (d3.event.pageX - 70) + "px")
+                .style("top", (d3.event.pageY - 40) + "px");
+        }
+
+        // mouseout function
+        function mouseout(d) {
+            // turn off hover and fade effects
+            d3.selectAll(".line")
+                .classed("line--hover", false)
+                .classed("line--fade", false);
+
+            // hide tooltip
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+        }
+    });
+}
+//third graph
+</script>

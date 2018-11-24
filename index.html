@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="jquery.dragtable.js"></script>
+    <script src="jquery.tablednd.js"></script>
+    <link rel="stylesheet" type="text/css" href="dragtable.css" />
+    <link rel="stylesheet" type="text/css" href="tablednd.css" />
+    <style>
+    .circle {
+        background-color: #D8CF49;
+        border-radius: 50%;
+        border: 1px solid black;
+    }
+
+    td {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+    </style>
+</head>
+
+<body onLoad="buildHtmlTable('#demo',[],-1)">
+
+    <form>
+Select the Dataset:
+<select id="mySelect">
+  <option value="NewsArticles">NewsArticles Dataset</option>
+  <option value="MovieScripts">MovieScripts Dataset</option>
+</select>
+<input type="button" onclick="getOption()" value="Click Me!">
+</form>
+
+
+
+    <table id="demo">
+    </table>
+    <div id="chart2"></div>
+    <script>
+        var dataset = "NewsArticles";
+   function getOption() {
+    var obj = document.getElementById("mySelect");
+    dataset = obj.options[obj.selectedIndex].text;
+     $('#demo').fadeOut('slow');
+        $('#demo').empty();
+        buildHtmlTable('#demo', [], -1);
+        $('#demo').fadeIn('fast');
+        localStorage.setItem('dataset', dataset);
+}
+
+            console.log(dataset);
+
+    function secondchart(topic) {
+        var filepath = "news-data/topic-word-rank-2.json";
+        if(dataset == "MovieScripts Dataset"){
+            filepath = "movie-data/topic-word-rank-1.json";
+        }
+        d3.json(filepath, function(data) {
+
+            var topic_word_data = data;
+            sorting_data = [];
+            topics = Object.keys(topic_word_data);
+            for (var i = 0; i < topics.length; i++) {
+                sorting_data.push({ key: topics[i], value: topic_word_data[topics[i]].length, rank: 0 });
+            }
+
+            function sortBars(d) {
+                selected_word = d.name;
+                for (i = 0; i < topics.length; i++) {
+                    for (j = 0; j < topic_word_data[topics[i]].length; j++) {
+                        if (topic_word_data[topics[i]][j].name == selected_word) {
+                            for (k = 0; k < sorting_data.length; k++) {
+                                if (sorting_data[k].key == topics[i]) {
+                                    sorting_data[k].rank = topic_word_data[topics[i]][j].value;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                var sortOrder = false;
+                sortOrder = !sortOrder;
+
+                sortItems = function(a, b) {
+                    if (sortOrder) {
+                        return b.rank - a.rank;
+                    }
+                    return a.rank - b.rank;
+                };
+                svg.selectAll("rect")
+                    .sort(sortItems)
+                    .transition()
+                    .delay(function(d, i) {
+                        return i * 50;
+                    })
+                    .duration(1000)
+                    .attr("x", function(d, i) {
+                        return xScale(i);
+                    });
+
+                svg.selectAll('text')
+                    .sort(sortItems)
+                    .transition()
+                    .delay(function(d, i) {
+                        return i * 50;
+                    })
+                    .duration(1000)
+                    .text(function(d) {
+                        return d.key;
+                    })
+                    .attr("text-anchor", "middle")
+                    .attr("x", function(d, i) {
+                        return xScale(i) + xScale.rangeBand() / 2;
+                    })
+                    .attr("y", function(d) {
+                        return h - yScale(d.value) + 14;
+                    });
+            }
+
+
+            var selected_topic = topic.toLowerCase();
+            var seconddata = topic_word_data[selected_topic];
+            data = seconddata.sort(function(a, b) {
+                return parseFloat(b.value) - parseFloat(a.value);
+            });
+            for (i = 0; i < 10; i++) {
+                if (i == 0) {
+                    top_ten_data = [{ name: seconddata[0].name, value: seconddata[0].value }];
+                } else {
+                    top_ten_data.push(seconddata[i]);
+                }
+            }
+            data = top_ten_data.sort(function(a, b) {
+                return d3.ascending(a.value, b.value);
+            })
+            d3.select('#secondId').remove();
+            //set up svg using margin conventions - we'll need plenty of room on the left for labels
+            var margin = {
+                top: 15,
+                right: 100,
+                bottom: 15,
+                left: 100
+            };
+
+            var width = 560 - margin.left - margin.right,
+                height = 200 - margin.top - margin.bottom;
+            $('#chart2').empty();
+            var svg = d3.select("#chart2").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("id", "secondId")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var x = d3.scale.linear()
+                .range([0, width])
+                .domain([0, d3.max(data, function(d) {
+                    return d.value;
+                })]);
+
+            var y = d3.scale.ordinal()
+                .rangeRoundBands([height, 0], .1)
+                .domain(data.map(function(d) {
+                    return d.name;
+                }));
+
+            //make y axis to show bar names
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                //no tick marks
+                .tickSize(0)
+                .orient("left");
+
+            var gy = svg.append("g")
+                .attr("class", "y secondaxis")
+                .call(yAxis)
+
+            var bars = svg.selectAll(".bar")
+                .data(data)
+                .enter()
+                .append("g")
+
+            //append rects
+            bars.append("rect")
+                .attr("class", "bar")
+                .attr("y", function(d) {
+                    return y(d.name);
+                })
+                .attr("height", y.rangeBand())
+                .attr("x", 0)
+                .attr("width", function(d) {
+                    return x(d.value);
+                })
+                .on({
+                    "mouseover": function(d) {
+                        d3.select(this).style("cursor", "pointer");
+                    },
+                    "mouseout": function(d) {
+                        d3.select(this).style("cursor", "default");
+                    }
+                })
+                .on("click", sortBars);
+
+            //add a value label to the right of each bar
+            bars.append("text")
+                .attr("class", "label")
+                //y position of the label is halfway down the bar
+                .attr("y", function(d) {
+                    return y(d.name) + y.rangeBand() / 2 + 4;
+                })
+                //x position is 3 pixels to the right of the bar
+                .attr("x", function(d) {
+                    return x(d.value) + 3;
+                })
+                .text(function(d) {
+                    return d.value;
+                });
+        });
+    }
+
+
+
+
+
+    function buildHtmlTable(selector, order, flag) {
+        var filepath = "news-data/tutorial_conposition.csv";
+        console.log(dataset);
+        if(dataset == "MovieScripts Dataset"){
+            console.log("yayy");
+            filepath = "movie-data/tutorial_conposition.csv";
+        }
+        d3.csv(filepath, function(myList) {
+            var colorder, roworder = 0;
+            if (flag == 0) {
+                colorder = order;
+            } else if (flag == 1) {
+                roworder = order;
+            }
+
+            // Builds the HTML Table out of myList.
+            var rowHash = myList[0];
+
+            if (flag == 0) {
+                var columns = addAllColumnHeaders(order, selector);
+            } else {
+                var columns = addAllColumnHeaders(rowHash, selector);
+
+            }
+            var rows = [];
+            for (var o = 0; o < myList.length; o++) {
+                rows.push(o);
+            }
+            if (flag == 1) {
+                rows = roworder;
+            }
+
+            for (var i = 0; i < rows.length; i++) {
+                var row$ = $('<tr/>').on('dblclick', function(e) {
+                    $("#demo td").removeClass("highlight");
+
+
+                    var clickedCell = $(e.target).closest("td");
+                    row$.attr("id", "user" + i);
+                    documentSelected(clickedCell.text(), myList);
+                });
+                var fileValue = myList[rows[i]][columns[0]];
+                var fileName = myList[rows[i]][columns[1]];
+
+                row$.append($('<td/>').html(fileValue))
+                    .click(function() {
+                        docName = fileName;
+                        setTimeout(documentClicked(fileName), 3000);
+
+                    });
+                row$.append($('<td/>').html(fileName))
+                    .click(function() {
+                        docName = fileName;
+                        setTimeout(documentClicked(fileName), 3000);
+
+                    });;
+
+
+                for (var colIndex = 2; colIndex < columns.length; colIndex++) {
+                    var colhead = columns[colIndex];
+
+                    var numValue = myList[rows[i]][columns[colIndex]];
+                    row$.append($('<td/>')
+                        .append($('<div/>')
+                            .attr("class", "circle")
+                            .attr('style', 'width:' + (28 * numValue).toString() + 'px; height:' + (28 * numValue).toString() + 'px')))
+                }
+
+                $(selector).append(row$);
+            }
+            var ths = $('th').each(function() {
+                var ths = this;
+                ths.addEventListener('dblclick', function(e) {
+                    topicSelected($(e.target).first().html(), myList);
+                });
+                ths.addEventListener('click', function(e) { secondchart($(e.target).first().html()) });
+
+            });
+
+        });
+
+
+    }
+
+
+    // Adds a header row to the table and returns the set of columns.
+    // Need to do union of keys from all records as some records may not contain
+    // all records.
+    function addAllColumnHeaders(rowHash, selector) {
+        var columnSet = [];
+        var headerTr$ = $('<tr/>');
+        //for (var i = 0; i < myList.length; i++) {
+        console.log(rowHash);
+        //for(var k=0;k<rowHash.length;k++){
+        for (var key in rowHash) {
+            if ($.inArray(key, columnSet) == -1) {
+                columnSet.push(key);
+                headerTr$.append($('<th/>').html(key));
+            }
+        }
+        //}
+        $(selector).append(headerTr$);
+        return columnSet;
+    }
+
+    setTimeout(myFun, 1000);
+
+    function myFun() {
+
+        $("#demo").tableDnD();
+        $("#demo").tableDnDUpdate();
+        $('#demo').dragtable();
+
+    }
+
+    function documentClicked(docName) {
+        console.log(docName);
+        doctosend = docName;
+        localStorage.setItem('current_document', doctosend);
+        window.open('textviewer.html')
+    }
+
+    function documentSelected(docName, myList) {
+
+        selected_document = docName;
+        arrToSort = [];
+        for (key in Object.keys(myList)) {
+            if (myList[key].filename == selected_document) {
+                tempdict = {};
+                index = [];
+
+                tvalues = Object.values(myList[key]);
+
+                for (i = 2; i < tvalues.length; i++) {
+                    arrToSort.push(tvalues[i]);
+                }
+
+                //tvalues = arrToSort;
+                //console.log(tvalues);
+                newarr = arrToSort.sort(function(a, b) { return b - a });
+                index.push("sno");
+                index.push("filename");
+                tempdict["sno"] = "";
+                tempdict["filename"] = "";
+                for (var i = 0; i < arrToSort.length; i++) {
+                    if (tvalues.indexOf(newarr[i]) > 0) {
+                        index.push("Topic" + (tvalues.indexOf(newarr[i]) - 1));
+                        var te = "Topic" + (tvalues.indexOf(newarr[i]) - 1);
+                        tempdict[te] = "";
+                        tvalues[tvalues.indexOf(newarr[i])] = -1;
+                    }
+                }
+                console.log(tempdict);
+                console.log(myList[0]);
+            }
+        }
+        console.log(myList);
+
+        $('#demo').fadeOut('slow');
+        $('#demo').empty();
+        buildHtmlTable('#demo', tempdict, 0);
+        $('#demo').fadeIn('fast');
+
+    }
+
+    function topicSelected(topicName, myList) {
+
+        selected_topic = topicName;
+        arrToSort = [];
+        index = Object.keys(myList);
+
+        for (var i = 0; i < myList.length; i++) {
+
+            arrToSort.push(myList[i][topicName]);
+        }
+        var ty = [];
+        for (var i = 0; i < arrToSort.length; i++) {
+            ty.push(arrToSort[i]);
+        }
+        newarr = arrToSort.sort(function(a, b) { return b - a });
+        tempdict = [];
+        for (var i = 0; i < arrToSort.length; i++) {
+            if (ty.indexOf(newarr[i]) >= 0) {
+                tempdict.push(ty.indexOf(newarr[i]));
+                ty[ty.indexOf(newarr[i])] = -1;
+            }
+        }
+
+        $('#demo').fadeOut('slow');
+        $('#demo').empty();
+        buildHtmlTable('#demo', tempdict, 1);
+        $('#demo').fadeIn('fast');
+
+    }
+
+    </script>
+</body>
+
+</html>
