@@ -1,71 +1,72 @@
 <!DOCTYPE html>
+
 <head>
-<meta charset="utf-8">
-  <script src="d3.v4.min.js"></script>
-<script>
-	d4=d3
+    <meta charset="utf-8">
+    <script src="d3.v4.min.js"></script>
+    <script src="barchart.js"></script>
+    <script>
+        d4=d3
 </script>
-  <script src="d3.v3.min.js"></script>
+    <script src="d3.v3.min.js"></script>
+    <style>
+        body {
+          font: 10px sans-serif;
+        }
+        .bar rect {
+          fill: inherit;
+        }
+        .bar text.value {
+          fill: white;
+        }
+        .axis {
+          shape-rendering: crispEdges;
+        }
+        .axis path {
+          fill: none;
+        }
+        .x.axis line {
+          stroke: #fff;
+          stroke-opacity: .8;
+        }
+        .y.axis path {
+          stroke: black;
+        }
+                 .below {
+          font-size: 10pt;
+          font-weight: bold;
+          font-family: Arial, sans-serif;
+        }
+        div.ex1 {
+            background-color: transparent;
+            
+            overflow: auto;
+        }
+        
+        #list  p {
+            font: arial;
+            font-size: 14px;
+            background-color: yellow ;
+        }
+        path { 
+            stroke: steelblue;
+            stroke-width: 2;
+            fill: none;
+        }
 
-<style>
-    body {
-		  font: 10px sans-serif;
-		}
-		.bar rect {
-		  fill: inherit;
-		}
-		.bar text.value {
-		  fill: white;
-		}
-		.axis {
-		  shape-rendering: crispEdges;
-		}
-		.axis path {
-		  fill: none;
-		}
-		.x.axis line {
-		  stroke: #fff;
-		  stroke-opacity: .8;
-		}
-		.y.axis path {
-		  stroke: black;
-		}
-				 .below {
-		  font-size: 10pt;
-		  font-weight: bold;
-		  font-family: Arial, sans-serif;
-		}
-		div.ex1 {
-			background-color: transparent;
-			
-			overflow: auto;
-		}
-		
-		#list  p {
-			font: arial;
-			font-size: 14px;
-			background-color: yellow ;
-		}
-		path { 
-			stroke: steelblue;
-			stroke-width: 2;
-			fill: none;
-		}
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: grey;
+            stroke-width: 1;
+            shape-rendering: crispEdges;
+        }
 
-		.axis path,
-		.axis line {
-			fill: none;
-			stroke: grey;
-			stroke-width: 1;
-			shape-rendering: crispEdges;
-		}
-
-		.legend {
-			font-size: 16px;
-			font-weight: bold;
-			text-anchor: middle;
-		}
-		   
+        .legend {
+            font-size: 16px;
+            font-weight: bold;
+            text-anchor: middle;
+        }
+           
 .line {
   fill: none;
   opacity: 0.9;
@@ -121,34 +122,33 @@ div.tooltip:after {
   position: absolute;
   text-align: center;
 }
-	}
-	</style>
-<script>
-    function getUrlVars()
-	{
-	    var vars = [], hash;
-	    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-	    for(var i = 0; i < hashes.length; i++)
-	    {
-	        hash = hashes[i].split('=');
-	        vars.push(hash[0]);
-	        vars[hash[0]] = hash[1];
-	    }
-		var1=vars["search"]+'.txt';
-		console.log(window.location.href);
-	    return vars;
-		
-	}
+    }
+    </style>
+    <script>
+        function getUrlVars()
+    {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        var1=vars["search"]+'.txt';
+        console.log(window.location.href);
+        return vars;
+        
+    }
 
-	</script>
-<link rel="stylesheet" href="bootstrap.min.css">
-
-<script src="jquery.min.js"></script>
-<script src="bootstrap.min.js"></script>
-<script src="jquery-1.11.0.min.js"></script>
-<script src="d3.v3.min.js"></script>
-<script src="jquery.min.js"></script>
-<script src="jquery.min.js"></script>
+    </script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <script src="jquery.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="jquery-1.11.0.min.js"></script>
+    <script src="d3.v3.min.js"></script>
+    <script src="jquery.min.js"></script>
+    <script src="jquery.min.js"></script>
 
 <body>
     <table>
@@ -165,7 +165,7 @@ div.tooltip:after {
                     $(document).ready(function read1() {
                         //var id = "news-data/news/"+getUrlVars()["search"]+".txt";
                         var id = "news-data/news/" + localStorage['current_document'];
-                        if(localStorage['dataset'] == "MovieScripts Dataset"){
+                        if (localStorage['dataset'] == "MovieScripts Dataset") {
                             id = "movie-data/movie/" + localStorage['current_document'];
                         }
                         $.get(id, function(data) {
@@ -186,7 +186,6 @@ div.tooltip:after {
                     });
 
                     function rankviewinp(d) {
-                        console.log("yo");
                         var word = Object.values(Object.values(d)[0].childNodes)[0].data;
                         wordtosend = word.trim();
                         localStorage.setItem('wordToRV', wordtosend);
@@ -229,9 +228,9 @@ var svg = d3.select("#sidetable").append("svg")
 
 
 var curdocdata = [];
-var filepath =  "news-data/tutorial_conposition.csv";
-if(localStorage['dataset'] == "MovieScripts Dataset"){
-filepath = "movie-data/tutorial_conposition.csv";
+var filepath = "news-data/tutorial_conposition.csv";
+if (localStorage['dataset'] == "MovieScripts Dataset") {
+    filepath = "movie-data/tutorial_conposition.csv";
 }
 d3.csv(filepath, function(error, data) {
     var color = d3.scale.linear().domain([0, Object.keys(data[0]).length - 1])
@@ -244,7 +243,7 @@ d3.csv(filepath, function(error, data) {
 
     data.forEach(function(d) {
         if (d.filename == id) {
-            
+
             d = Object.entries(d).slice(2, ).map(([key, value]) => ({ key, value }));
             dunsort = d;
             curdocdata = dunsort;
@@ -252,8 +251,9 @@ d3.csv(filepath, function(error, data) {
             d = d.sort(function(a, b) {
                 return d3.ascending(a.value, b.value);
             });
-
-
+            console.log(id);
+            console.log("thisdoc");
+            console.log(d);
             var margin = {
                 top: 15,
                 right: 25,
@@ -327,39 +327,9 @@ d3.csv(filepath, function(error, data) {
                     return d.key;
                 });
 
-            // Set the scale domain.
-            /* x.domain([0, d[0]]);
-
-		  var y = d3.scale.ordinal()
-            .rangeRoundBands([1000, 0], .1)
-            .domain(d.map(function (d) {
-                return d.value;
-            }));
-		  console.log(d[0]);
-		  var bar = svg.selectAll("g.bar")
-			  .data(d)
-			.enter().append("g")
-			  .attr("class", "bar")
-			  .attr("transform", function(d) {  console.log(y(d.value)); return "translate(0," + y(d.value) + ")"; });
-			  console.log(y.rangeBand()/1.5);
-		  bar.append("rect")
-		  	.attr("x",100)
-		  	.attr("y",100)
-			  .attr("width", function(d) {if(d.filename==id) return x(d.value/3); })
-			  .attr("height", y.rangeBand()/1.5)
-			  
-
-		  
-		bar.append("text")
-			.attr("class", "below")
-			.attr("x", 60)
-			.attr("dy", "2em")
-			.attr("text-anchor", "left").style("fill", "#000000")
-			.text(function(d,i) {  return d.key; });
-			//highlighting doc text 
-			*/
+           
             var path2 = "news-data/word-topic-count.csv";
-            if(localStorage['dataset'] == "MovieScripts Dataset"){
+            if (localStorage['dataset'] == "MovieScripts Dataset") {
                 path2 = "movie-data/word-topic-count-1.csv";
             }
             d3.csv(path2, function(error, data) {
@@ -380,6 +350,7 @@ d3.csv(filepath, function(error, data) {
 
                 bar.selectAll("rect")
                     .on("click", function(d) {
+
                         selected_doc = id.split(".")[0];
                         selected_topic = d.key;
                         var wordlist = [];
@@ -409,83 +380,81 @@ d3.csv(filepath, function(error, data) {
 });
 
 function linechart() {
-    console.log("hi");
 
     var sumid = "news-data/news-summary/" + localStorage['current_document'];
-     if(localStorage['dataset'] == "MovieScripts Dataset"){
-                            sumid = "movie-data/movie-summary/" + localStorage['current_document'] + ".txt";
-                        }
+    if (localStorage['dataset'] == "MovieScripts Dataset") {
+        sumid = "movie-data/movie-summary/" + localStorage['current_document'] + ".txt";
+    }
     $.get(sumid, function(data) {
         document.getElementById("summary").innerHTML = "<h5>Generated Abstractive Summary</h5>" + data;
     }, "text");
 
     var curdocsum = [];
     var path3 = "news-data/news-summary-topics.csv";
-    if(localStorage['dataset'] == "MovieScripts Dataset"){
-            path3 = "movie-data/movie-summary-topics.csv";
+    if (localStorage['dataset'] == "MovieScripts Dataset") {
+        path3 = "movie-data/movie-summary-topics.csv";
 
-                        }
-    d3.csv(path3, function(error, data) {
-    	data.forEach(function(d) {
-        if (d.filename == localStorage['current_document']) {
-         d = Object.entries(d).slice(2, ).map(([key, value]) => ({ key, value }));
-        	curdocsum = d;
-        }});
-	
-  
-     curdocsum = curdocsum.sort(function(a, b) {
-                return d3.ascending(a.key.slice(5,), b.key.slice(5,));
-            });
-     curdocdata = curdocdata.sort(function(a, b) {
-                return d3.ascending(a.key.slice(5,), b.key.slice(5,));
-            });
-
-       console.log(curdocsum);
-    console.log(curdocdata);
-    secondchartdata = [];
-    for(var j=0;j<curdocdata.length;j++){
-    	secondchartdata.push({ tick : j ,actual_document: Object.values(curdocdata)[j].value, gen_summary: Object.values(curdocsum)[j].value});
     }
-    console.log(secondchartdata);
-    // set the dimensions and margins of the graph
-    var margin = { top: 20, right: 40, bottom: 30, left: 50 },
-        width = 500 - margin.left - margin.right,
-        height = 960 - margin.top - margin.bottom;
+    d3.csv(path3, function(error, data) {
+        data.forEach(function(d) {
+            if (d.filename == localStorage['current_document']) {
+                d = Object.entries(d).slice(2, ).map(([key, value]) => ({ key, value }));
+                curdocsum = d;
+            }
+        });
 
-    // the different dimensions in the data
-    var dims = ['actual_document', 'gen_summary'];
 
-    // set x-range
-    var Y = d4.scaleLinear().range([height, 0]);
+        curdocsum = curdocsum.sort(function(a, b) {
+            return d3.ascending(a.key.slice(5, ), b.key.slice(5, ));
+        });
+        curdocdata = curdocdata.sort(function(a, b) {
+            return d3.ascending(a.key.slice(5, ), b.key.slice(5, ));
+        });
 
-    // set the y-ranges
-    var x = {}
-    dims.forEach(dim => {
-        x[dim] = d4.scaleLinear().range([0, width]);
-    });
 
-    // define the line functions for each dimension
-    var lines = {}
-    dims.forEach(dim => {
-        lines[dim] = d4.line()
-            .y(d => Y(d.tick))
-            .x(d => x[dim](d[dim]));
-    });
+        secondchartdata = [];
+        for (var j = 0; j < curdocdata.length; j++) {
+            secondchartdata.push({ tick: j, actual_document: Object.values(curdocdata)[j].value, gen_summary: Object.values(curdocsum)[j].value });
+        }
+        // set the dimensions and margins of the graph
+        var margin = { top: 20, right: 40, bottom: 30, left: 50 },
+            width = 500 - margin.left - margin.right,
+            height = 960 - margin.top - margin.bottom;
 
-    // tooltip
-    var div = d3.select("#rightgraph").append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0);
+        // the different dimensions in the data
+        var dims = ['actual_document', 'gen_summary'];
 
-    // create the svg object
-    var svg = d3.select("#rightgraph").append("svg")
-        .attr("height", height )
-        .append("g")
-        .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
+        // set x-range
+        var Y = d4.scaleLinear().range([height, 0]);
 
-    // process the data
-   
+        // set the y-ranges
+        var x = {}
+        dims.forEach(dim => {
+            x[dim] = d4.scaleLinear().range([0, width]);
+        });
+
+        // define the line functions for each dimension
+        var lines = {}
+        dims.forEach(dim => {
+            lines[dim] = d4.line()
+                .y(d => Y(d.tick))
+                .x(d => x[dim](d[dim]));
+        });
+
+        // tooltip
+        var div = d3.select("#rightgraph").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        // create the svg object
+        var svg = d3.select("#rightgraph").append("svg")
+            .attr("height", height)
+            .append("g")
+            .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+        // process the data
+
 
         // Parse the data
         secondchartdata.forEach(d => {

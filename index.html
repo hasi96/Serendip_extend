@@ -8,6 +8,7 @@
     <script src="d3.v3.min.js"></script>
     <script src="jquery.dragtable.js"></script>
     <script src="jquery.tablednd.js"></script>
+    <script src="barchart.js"></script>
     <link rel="stylesheet" type="text/css" href="dragtable.css" />
     <link rel="stylesheet" type="text/css" href="tablednd.css" />
     <style>
@@ -50,7 +51,6 @@
         localStorage.setItem('dataset', dataset);
     }
 
-    console.log(dataset);
 
     function secondchart(topic) {
         var filepath = "news-data/topic-word-rank-2.json";
@@ -270,8 +270,10 @@
                         event.preventDefault();
                         timer = setTimeout(function() {
                             if (!prevent) {
-                        docName = fileName;
-                        setTimeout(documentClicked(fileName), 300000);
+                                console.log($(event.target).first().html());
+                        docName = $(event.target).first().html();
+
+                        setTimeout(documentClicked(docName), 300000);
                          }
                             prevent = false;
                         }, delay);
@@ -307,6 +309,8 @@
                 ths.addEventListener('click', function(e) {
                     timer = setTimeout(function() {
                         if (!prevent) {
+                            console.log("this");
+                            console.log($(e.target).first().html());
                             secondchart($(e.target).first().html());
                         }
                         prevent = false;
@@ -357,15 +361,14 @@
     }
 
     function documentClicked(docName) {
-
         doctosend = docName;
         localStorage.setItem('current_document', doctosend);
+        console.log("hoi");
+        console.log(doctosend);
         window.open('textviewer.html')
     }
 
     function documentSelected(docName, myList) {
-        console.log(docName);
-
         selected_document = docName;
         arrToSort = [];
         for (key in Object.keys(myList)) {
@@ -394,13 +397,8 @@
                         tvalues[tvalues.indexOf(newarr[i])] = -1;
                     }
                 }
-
-                console.log(index);
-                console.log(tempdict);
-                console.log(myList[0]);
             }
         }
-        console.log(myList);
 
         $('#demo').fadeOut('slow');
         $('#demo').empty();
