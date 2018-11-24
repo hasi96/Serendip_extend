@@ -204,8 +204,13 @@ div.tooltip:after {
         </tr>
 </body>
 <script>
+    linegraph();
 function getSummary() {
-    return linechart();
+    $('#rightgraph').fadeOut('slow');
+$('#rightgraph').empty();
+linechart();
+$('#rightgraph').fadeIn('fast');
+    
 }
 //fetching url value here
 var id = getUrlVars()["search"];
@@ -334,6 +339,7 @@ d3.csv(filepath, function(error, data) {
             }
             d3.csv(path2, function(error, data) {
                 topic_word_count = [];
+                topic_word_count_dict = [];
                 data.forEach(function(d) {
 
 
@@ -341,13 +347,17 @@ d3.csv(filepath, function(error, data) {
                     //console.log(datanew);
                     var word = datanew[1];
                     for (var i = 2; i < datanew.length; i++) {
-                        if (datanew[i].length > 0)
+                        if (datanew[i].length > 0){
                             topic_word_count.push([word, datanew[i].split(":")[0], datanew[i].split(":")[1]]);
+                            topic_word_count_dict.push({topic:datanew[i].split(":")[0],word:word,value:datanew[i].split(":")[1]});
+                        }
                     }
 
 
                 });
 
+                console.log("yo");
+                console.log(topic_word_count_dict);
                 bar.selectAll("rect")
                     .on("click", function(d) {
 
@@ -380,6 +390,7 @@ d3.csv(filepath, function(error, data) {
 });
 
 function linechart() {
+    $("#rightgraph").scroll();
 
     var sumid = "news-data/news-summary/" + localStorage['current_document'];
     if (localStorage['dataset'] == "MovieScripts Dataset") {
@@ -524,4 +535,106 @@ function linechart() {
     });
 }
 //third graph
+function linegraph(){
+
+           var path2 = "news-data/word-topic-count.csv";
+            if (localStorage['dataset'] == "MovieScripts Dataset") {
+                path2 = "movie-data/word-topic-count-1.csv";
+            }
+            d3.csv(path2, function(error, data) {
+                topic_word_count_dict = [];
+                data.forEach(function(d) {
+
+
+                    var datanew = Object.values(d)[0].split(" ");
+                    //console.log(datanew);
+                    var word = datanew[1];
+                    for (var i = 2; i < datanew.length; i++) {
+                        if (datanew[i].length > 0){
+                          
+                            topic_word_count_dict.push({topic:datanew[i].split(":")[0],word:word,value:datanew[i].split(":")[1]});
+                        }
+                    }
+
+
+                });
+
+
+            
+// Set the dimensions of the cdanvas / graph
+var margin = {top: 30, right: 20, bottom: 70, left: 50},
+    width =600 - margin.left - margin.right,
+    height = 450 - margin.top - margin.bottom;
+
+// Parse the date / time
+
+// Set the ranges
+var y = d3.scale.ordinal().rangePoints([0, width]);
+var x = d3.scale.linear().range([0,height ]);
+
+// Define the axes
+var yAxis = d3.svg.axis().scale(y)
+    .orient("bottom");
+
+var xAxis = d3.svg.axis().scale(x)
+    .orient("left");
+
+// Define the line
+var priceline = d3.svg.line()   
+    .y(function(d) { return y(d.word); })
+    .x(function(d) { return x(d.value); });
+    
+// Adds the svg canvas
+var svg = d3.select("#rightgraph")
+    .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+        .attr("transform", 
+              "translate(" + margin.left + "," + margin.top + ")");
+
+// Get the data
+//d3.csv("word-topic-count.csv", function(error, data) {
+    data = topic_word_count_dict;
+    topic_word_count_dict.forEach(function(d) {
+        d.word = d.word;
+        d.value = +d.value;
+    });
+
+    // Scale the range of the data
+    y.domain(data.map(function(d) { return d.word; }));
+    x.domain([0, d3.max(data, function(d) { return d.value; })]);
+    console.log(data);
+    // Nest the entries by symbol
+    var dataNest = d3.nest()
+        .key(function(d) {return d.topic;})
+        .entries(data);
+
+    var color = d3.scale.category10();   // set the colour scale
+
+    legendSpace = width/dataNest.length; // spacing for legend
+
+    // Loop through each symbol / key
+    dataNest.forEach(function(d,i) { 
+
+        svg.append("path")
+            .attr("class", "line")
+            .style("stroke", function() { // Add the colours dynamically
+                return d.color = color(d.key); })
+            .attr("d", priceline(d.values)) .style("opacity", "0.3").on("mouseover", mouseover).on("mouseout", mouseout);
+
+       
+
+    });
+});
+}
+
+
+function mouseover(d, i) {d3.select(this)
+                               .style("opacity", "1");  };
+function mouseout(d, i) {
+                d3.select(this)
+                               .style("opacity", "0.3");   };
+   
+
 </script>
