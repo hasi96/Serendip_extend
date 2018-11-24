@@ -142,6 +142,7 @@ div.tooltip:after {
 
 	</script>
 <link rel="stylesheet" href="bootstrap.min.css">
+
 <script src="jquery.min.js"></script>
 <script src="bootstrap.min.js"></script>
 <script src="jquery-1.11.0.min.js"></script>
@@ -379,13 +380,12 @@ d3.csv(filepath, function(error, data) {
 
                 bar.selectAll("rect")
                     .on("click", function(d) {
-
                         selected_doc = id.split(".")[0];
                         selected_topic = d.key;
                         var wordlist = [];
                         var op = 0.1;
                         for (var i = 0; i < topic_word_count.length; i++) {
-                            if (("topic" + topic_word_count[i][1]) == selected_topic) {
+                            if (("Topic" + topic_word_count[i][1]) == selected_topic) {
 
                                 var s = d.word;
                                 var div = document.getElementById('read').innerHTML;
