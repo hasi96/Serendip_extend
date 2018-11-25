@@ -393,8 +393,11 @@
                 tempdict["filename"] = "";
                 for (var i = 0; i < arrToSort.length; i++) {
                     if (tvalues.indexOf(newarr[i]) > 0) {
-                        index.push("Topic" + (tvalues.indexOf(newarr[i]) - 1));
-                        var te = "Topic" + (tvalues.indexOf(newarr[i]) - 1);
+                        var top = "topic";
+                       
+                        index.push(top + (tvalues.indexOf(newarr[i]) - 1));
+                        var te = top + (tvalues.indexOf(newarr[i]) - 1);
+
                         tempdict[te] = "";
                         tvalues[tvalues.indexOf(newarr[i])] = -1;
                     }
