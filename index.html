@@ -46,9 +46,11 @@
         dataset = obj.options[obj.selectedIndex].text;
         $('#demo').fadeOut('slow');
         $('#demo').empty();
+                localStorage.setItem('dataset', dataset);
+
         buildHtmlTable('#demo', [], -1);
         $('#demo').fadeIn('fast');
-        localStorage.setItem('dataset', dataset);
+        console.log(dataset);
     }
 
 

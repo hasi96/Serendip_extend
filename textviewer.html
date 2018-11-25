@@ -122,6 +122,7 @@ div.tooltip:after {
   position: absolute;
   text-align: center;
 }
+
     }
     </style>
     <script>
@@ -154,12 +155,12 @@ div.tooltip:after {
     <table>
         <tr>
             <td>
-                <div id="sidetable" class="ex1" style="width:250px">
+                <div id="sidetable" class="ex1" style="width:250px; overflow-y: scroll;">
                 </div>
             </td>
             <td>
                 <button type="button" onclick="getSummary()">Generate Summary and Compare!</button>
-                <div id="read" class="ex1">
+                <div id="read" class="ex1" style=" overflow-y: scroll; overflow: auto">
                     <script>
                     //loading document here
                     $(document).ready(function read1() {
@@ -243,6 +244,7 @@ d3.csv(filepath, function(error, data) {
         .range([d3.rgb("#007AFF"), d3.rgb('#FFF500')]);
     if (error) throw error;
     id = localStorage['current_document'];
+    console.log(id);
 
     // Parse numbers, and sort by value.
 
@@ -335,7 +337,7 @@ d3.csv(filepath, function(error, data) {
            
             var path2 = "news-data/word-topic-count.csv";
             if (localStorage['dataset'] == "MovieScripts Dataset") {
-                path2 = "movie-data/word-topic-count-1.csv";
+                path2 = "movie-data/topic-word-count.csv";
             }
             d3.csv(path2, function(error, data) {
                 topic_word_count = [];
@@ -349,15 +351,14 @@ d3.csv(filepath, function(error, data) {
                     for (var i = 2; i < datanew.length; i++) {
                         if (datanew[i].length > 0){
                             topic_word_count.push([word, datanew[i].split(":")[0], datanew[i].split(":")[1]]);
-                            topic_word_count_dict.push({topic:datanew[i].split(":")[0],word:word,value:datanew[i].split(":")[1]});
+                       
                         }
                     }
 
 
                 });
 
-                console.log("yo");
-                console.log(topic_word_count_dict);
+                console.log(topic_word_count);
                 bar.selectAll("rect")
                     .on("click", function(d) {
 
@@ -365,8 +366,12 @@ d3.csv(filepath, function(error, data) {
                         selected_topic = d.key;
                         var wordlist = [];
                         var op = 0.1;
+                        var top = "Topic";
                         for (var i = 0; i < topic_word_count.length; i++) {
-                            if (("Topic" + topic_word_count[i][1]) == selected_topic) {
+                            if(localStorage['dataset'] == "MovieScripts Dataset"){
+                                top = "topic";
+                            }
+                            if ((top + topic_word_count[i][1]) == selected_topic) {
 
                                 var s = d.word;
                                 var div = document.getElementById('read').innerHTML;
@@ -539,7 +544,7 @@ function linegraph(){
 
            var path2 = "news-data/word-topic-count.csv";
             if (localStorage['dataset'] == "MovieScripts Dataset") {
-                path2 = "movie-data/word-topic-count-1.csv";
+                path2 = "movie-data/topic-word-count.csv";
             }
             d3.csv(path2, function(error, data) {
                 topic_word_count_dict = [];
