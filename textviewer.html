@@ -221,7 +221,7 @@ div.tooltip:after {
                 <br>
 
 
-                <div id="main_content" class=" span12 spanv6" >
+                <div id="main_content" class=" span12 spanv6" style="width: 800px;height: 400px;margin-left: 10px;">
                     </div>
                 
 
@@ -230,7 +230,7 @@ div.tooltip:after {
             </div>
             <!-- </td>
             <td> -->
-                <div id="rightgraph" class ="span3 spanv12" style="overflow:auto" >
+                <div id="rightgraph" class ="span3 spanv12" style="width: 800px;height: 400px;margin-left: 10px;" >
                 </div>
             </div>
         </div>
@@ -492,7 +492,8 @@ function linechart() {
         curdocdata = curdocdata.sort(function(a, b) {
             return d3.ascending(a.key.slice(5, ), b.key.slice(5, ));
         });
-
+        console.log("hi");
+        console.log(curdocsum);
 
         secondchartdata = [];
         for (var j = 0; j < curdocdata.length; j++) {
