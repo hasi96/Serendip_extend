@@ -316,7 +316,6 @@ d3.csv(filepath, function(error, data) {
             curdocdata = dunsort;
 
             d = d.sort(function(a, b) {
-                if(a.value>=0 && b.value>=0)
                 return d3.ascending(a.value, b.value);
             });
             console.log(id);
@@ -337,7 +336,11 @@ d3.csv(filepath, function(error, data) {
             var x = d3.scale.linear()
                 .range([0, 150])
                 .domain([0, d3.max(d, function(e) {
+                    if(e.value>=0)
                     return e.value;
+                else{
+                    return 0;
+                }
                 })]);
 
             var y = d3.scale.ordinal()
@@ -349,7 +352,6 @@ d3.csv(filepath, function(error, data) {
             //make y axis to show bar names
             var yAxis = d3.svg.axis()
                 .scale(y)
-                //no tick marks
                 .tickSize(0)
                 .orient("left");
 
