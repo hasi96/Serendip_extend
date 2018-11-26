@@ -479,6 +479,7 @@ function linechart() {
     }
     d3.csv(path3, function(error, data) {
         data.forEach(function(d) {
+            console.log(d.filename);
             if (d.filename == localStorage['current_document']) {
                 d = Object.entries(d).slice(2, ).map(([key, value]) => ({ key, value }));
                 curdocsum = d;
