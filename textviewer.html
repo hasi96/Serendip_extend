@@ -373,7 +373,11 @@ d3.csv(filepath, function(error, data) {
                 .attr("height", y.rangeBand() / 2)
                 .attr("x", 0)
                 .attr("width", function(d) {
+                    if(d.value>=0)
                     return x(d.value);
+                else{
+                    return 0;
+                }
                 })
                 .attr("style", function(d, i) {
                     d.color = color(i);
