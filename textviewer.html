@@ -172,23 +172,14 @@ div.tooltip:after {
         <div class="navbar-inner">
             <a class="brand" href="#">Serendip : Implementation and Extension</a>
             <div class="nav" style="margin-left: 50px;">
-                <form>
-                   
-
-                
-                    Dataset:
-                    <select id="mySelect">
-                        <option value="NewsArticles">NewsArticles Dataset</option>
-                        <option value="MovieScripts">MovieScripts Dataset</option>
-                    </select>
-                     <input type="button" onclick="getOption()" value="Click Me!">
+               
                     
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                      <a id="openRankViewer" class="btn pull-right " title="Open RankViewer for this model." style="float:right" href= "rankviewer.html">RankViewer</a>
                    
-                    </form>
+                  
                     <!-- Actual modal div located at top of sidebar_content block -->
             </div>
         </div>
@@ -325,6 +316,7 @@ d3.csv(filepath, function(error, data) {
             curdocdata = dunsort;
 
             d = d.sort(function(a, b) {
+                if(a.value>=0 && b.value>=0)
                 return d3.ascending(a.value, b.value);
             });
             console.log(id);
