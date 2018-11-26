@@ -8,440 +8,1105 @@
     <script src="d3.v3.min.js"></script>
     <script src="jquery.dragtable.js"></script>
     <script src="jquery.tablednd.js"></script>
-    <script src="barchart.js"></script>
     <link rel="stylesheet" type="text/css" href="dragtable.css" />
     <link rel="stylesheet" type="text/css" href="tablednd.css" />
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="bootstrap.css">
     <style>
+    body {
+    padding-top: 40px;
+    background: #ccc;
+    color: #333;
+}
+
+body.body-inverse {
+    background: #333;
+    color: #ccc;
+}
+
+body.body-inverse .popover-title {
+    color: #000;
+}
+
+.navbar-fixed-top,
+.container-absolute .row-fluid > *[class*="span"],
+.withLoadingIndicator:after,
+.meso_container .meso_view {
+    box-shadow: 0 0 0 1px rgba(128,128,128,0.35), 0 2px 4px rgba(128,128,128,0.35);
+}
+
+.navbar .navbar-inner .brand {
+    padding-left: 32px;
+}
+
+.navbar a.brand:hover,
+.navbar a.brand:focus {
+    color: #000;
+}
+
+.navbar.navbar-inverse a.brand:hover,
+.navbar.navbar-inverse a.brand:focus {
+    color: #fff;
+}
+
+.container-absolute {
+    position: absolute;
+    margin: 0;
+    left: 0;
+    right: 0;
+    top: 40px;
+    bottom: 0;
+    min-width: 640px;
+    min-height: 576px;
+    padding: 12px;
+}
+
+/* Prevent rubber-band scrolling on the body in Safari on OS X 10.7.x and higher */
+/*@media screen and (min-width: 640px) and (min-height: 576px) {*/
+    /*body {*/
+        /*overflow: hidden;*/
+    /*}*/
+/*}*/
+
+/* Support for Bootstrap fluid grid system within a .container-absolute */
+.container-absolute .row-fluid {
+    position: relative;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+}
+
+/*.container-absolute .row-fluid > *:not(:first-child):last-child {*/
+    /*float: right;*/
+/*}*/
+
+.container-absolute .row-fluid > [class*="span"] {
+    position: relative;
+    /*overflow: hidden;*/
+    /*border-radius: 5px;*/
+}
+
+/* ":not(.navbar)" is a fix for dropdowns in navbars */
+.container-absolute .row-fluid > [class*="span"] > *:not(.navbar) {
+    overflow: auto;
+}
+
+/*.container-absolute .row-fluid > [class*="span"] > .navbar {*/
+    /*white-space: nowrap;*/
+/*}*/
+
+.container-absolute > * {
+    position: relative;
+}
+
+.container-absolute .row-fluid > *[class*="span"] {
+    background-color: #fff;
+}
+
+body.body-inverse .container-absolute .row-fluid > *[class*="span"] {
+    background: #1a1a1a;
+    /*color: #ccc;*/
+}
+
+body.body-inverse .container-absolute .row-fluid > *[class*="span"] {
+    border-color: #666;
+}
+
+.container-absolute .row-fluid *[class*="span"] > *[class*="span"] {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.container-absolute .row-fluid > *[class*="span"].omega {
+    float: right;
+}
+
+.container-absolute .row-fluid > *[class*="span"].omega-vertical {
+    margin-bottom: 0;
+}
+
+.container-absolute .row-fluid > *[class*="span"].omega-vertical-right {
+    position: absolute;
+    margin-bottom: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.container-absolute .row-fluid > *[class*="span"].alpha {
+    float: left;
+}
+
+.container-absolute .row-fluid > *[class*="span"].alpha-vertical-left {
+    position: absolute;
+    margin-left: 0;
+    margin-bottom: 0;
+    left: 0;
+    bottom: 0;
+}
+
+/* Vertical Grid */
+.spanv1 {
+    height: 9%;
+}
+.spanv2 {
+    height: 19%;
+}
+.spanv3 {
+    height: 29%;
+}
+.spanv4 {
+    height: 39%;
+}
+.spanv5 {
+    height: 49%;
+}
+.spanv6 {
+    height: 59%;
+}
+.spanv7 {
+    height: 69%;
+}
+.spanv8 {
+    height: 79%;
+}
+.spanv9 {
+    height: 89%;
+}
+.spanv10 {
+    height: 100%;
+}
+.spanv1,
+.spanv2,
+.spanv3,
+.spanv4,
+.spanv5,
+.spanv6,
+.spanv7,
+.spanv8,
+.spanv9 {
+    margin-bottom: 1%;
+}
+
+.span12.spanv10,
+.container-absolute .row-fluid > .span12.spanv10 {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: auto;
+}
+
+.navbar .navbar-inner {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.container-absolute [class*="span"] .navbar {
+    margin: 0;
+}
+
+.container-absolute [class*="span"] .navbar .navbar-inner {
+    min-height: 40px;
+    height: 40px;
+    white-space: nowrap;
+    /* Commented out to fix dropdowns in navbars */
+    /*overflow-y: hidden;*/
+    /*overflow-x: auto;*/
+}
+
+/* Fix for nav bars in toolbars */
+.container-absolute [class*="span"] .navbar.navbar-small .nav > li > a {
+    font-size: 12px;
+    padding: 8px 12px 7px;
+}
+
+.container-absolute [class*="span"] .navbar.navbar-mini .nav > li > a {
+    padding: 7px 10px 7px;
+}
+
+.container-absolute [class*="span"] .navbar .navbar-inner .brand {
+    position: absolute;
+    left: 0;
+    top: 0;
+    /*right: 0;*/
+    /*overflow: hidden;*/
+}
+
+.container-absolute [class*="span"] .navbar .nav {
+    background: inherit;
+    white-space: nowrap;
+}
+
+.container-absolute [class*="span"] .navbar.navbar-small .navbar-inner {
+    min-height: 35px;
+    height: 35px;
+}
+
+.container-absolute [class*="span"] .navbar.navbar-mini .navbar-inner {
+    min-height: 31px;
+    height: 31px;
+}
+
+.container-absolute [class*="span"] .navbar .navbar-inner {
+    border-radius: 0;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+    box-shadow: none;
+}
+
+.container-absolute [class*="span"] .navbar.navbar-inverse .navbar-inner {
+    border-bottom: 1px solid #000;
+}
+
+/* Normal navbar preceding a full-width / full-height fluid grid element. */
+.container-absolute [class*="span"] .navbar ~ .span12.spanv10 {
+    top: 40px;
+}
+
+.container-absolute [class*="span"] .navbar.navbar-small ~ .span12.spanv10 {
+    top: 36px;
+}
+
+.container-absolute [class*="span"] .navbar.navbar-small .brand {
+    font-size: 18px;
+    padding: 8px 18px 8px 32px;
+}
+
+.container-absolute [class*="span"] .navbar.navbar-mini ~ .span12.spanv10 {
+    top: 32px;
+}
+
+.container-absolute [class*="span"] .custom-pager-wrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    /*left: 0;*/
+    right: 0;
+    margin: 0;
+    z-index: 3;
+    border-left: 1px solid #ccc;
+    line-height: 20px;
+    width: 40px;
+    padding-right: 15px;
+}
+
+.container-absolute [class*="span"] .navbar ~ .custom-pager-wrapper {
+    top: 40px;
+}
+
+.container-absolute [class*="span"] .navbar-small ~ .custom-pager-wrapper {
+    top: 36px;
+
+}
+
+.container-absolute [class*="span"] .custom-pager-wrapper > .custom-pager > .page-buttons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 4;
+    background: #fff;
+}
+
+.container-absolute [class*="span"] .custom-pager-wrapper > .custom-pager > .page-buttons > .btn {
+    border-radius: 0;
+    width: 40px;
+    padding: 0;
+    height: 40px;
+    line-height: 40px;
+    border-left: 0;
+    /*border-right: 0;*/
+    border-top: 0;
+}
+
+.container-absolute [class*="span"] .custom-pager-wrapper > .custom-pager > .page-buttons > .btn.disabled,
+#main_content a.prev.disabled,
+#main_content a.next.disabled {
+    cursor: not-allowed;
+}
+
+.container-absolute [class*="span"] .custom-pager-wrapper > .custom-pager > .custom-pager-pages {
+    position: absolute;
+    top: 0;
+    /*display: none;*/
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    margin: 0 0 0;
+    text-align: right;
+    padding: 80px 15px 0 0;
+    background-color: #fff;
+    background-image: -webkit-gradient(linear, left center, right center, from(#ffffff), to(#cccccc));
+    background-image: -webkit-linear-gradient(left, #ffffff, #cccccc);
+    background-image: -moz-linear-gradient(left, #ffffff, #cccccc);
+    background-image: -o-linear-gradient(left, #ffffff, #cccccc);
+    background-image: -ms-linear-gradient(left, #ffffff, #cccccc);
+    background-image: linear-gradient(left, #ffffff, #cccccc);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,StartColorStr='#ffffff', EndColorStr='#cccccc');
+
+    background-repeat: no-repeat;
+    background-position: top right;
+    background-size: 15px 100%;
+}
+
+.container-absolute [class*="span"] .custom-pager-wrapper > .custom-pager > .custom-pager-pages > li {
+    display: block;
+    list-style: none;
+}
+
+.container-absolute [class*="span"] .custom-pager-wrapper > .custom-pager > .custom-pager-pages > li > a {
+    display: block;
+    width: 32px;
+    padding: 4px;
+    color: #333;
+    /*background: #ccc;*/
+    /*height: 40px;*/
+    /*background: blue;*/
+}
+
+.container-absolute [class*="span"] .custom-pager-wrapper > .custom-pager > .custom-pager-pages > li > a:hover {
+    background: #ccc;
+}
+
+.container-absolute [class*="span"] .custom-pager-wrapper > .custom-pager > .custom-pager-pages > li.current > a {
+    background: #0044cc;
+    outline: 1px solid rgba(0,0,0,0.35);
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.35);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.35);
+    cursor: not-allowed;
+}
+
+.container-absolute [class*="span"] .custom-pager-wrapper ~ .span12.spanv10 {
+    right: 56px;
+}
+
+.container-absolute [class*="span"] .navbar.navbar-mini.brand {
+    font-size: 16px;
+    padding: 7px 16px 7px 32px;
+}
+
+.navbar .navbar-inner .text {
+    position: relative;
+    top: 8px;
+    padding: 0 5px;
+    font-size: 20px;
+    font-weight: 200;
+    color: #777777;
+    text-shadow: 0 1px 0 #ffffff;
+}
+
+.navbar.navbar-inverse .navbar-inner .text {
+    color: #999;
+    text-shadow: 0 -1px 0;
+}
+
+.hero-unit {
+    background: 0;
+}
+
+
+/* line 106, ../sass/awesome.scss */
+.withLoadingIndicator {
+    position: relative;
+    pointer-events: none;
+}
+
+.withLoadingIndicator:after {
+  content: " ";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  width: 48px;
+  height: 48px;
+  background-color: #fff;
+  background-image: url("/static/img/ajax_loader_gray_64.gif");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 32px 32px;
+  border-radius: 5px;
+}
+
+
+.span12.spanv10 > svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.popover {
+    max-width: 100% !important;
+}
+
+.popover .popover-content {
+    overflow: auto;
+}
+
+.popover .popover-content .barGraphContainer svg {
+    height: 84px;
+}
+
+/* Mesoscale views */
+
+.meso_container .meso_view.span {
+    width: 23%;
+    height: 98%;
+    float: left;
+    margin: 1% !important;
+}
+
+/* Width tweaks for responsive containers */
+
+@media screen and (min-width: 1440px) {
+    .meso_container .meso_view.span {
+        width: 14.6666667%;
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    .meso_container .meso_view.span {
+        width: 10.5%;
+    }
+}
+
+/* Class for rotating icons */
+.rotate    {
+    -webkit-transform:rotate(-90deg);
+    -moz-transform:rotate(-90deg);
+    -o-transform:rotate(-90deg);
+    -ms-transform:rotate(-90deg);
+}
+
+#main_content a.prev,
+#main_content a.next {
+    text-align: center;
+    display: block;
+    line-height: 40px;
+    font-size: 16px;
+    width: 100%;
+    color: #fff;
+    font-weight: bold;
+    background: #0088cc;
+}
+
+#main_content a.prev:hover,
+#main_content a.next:hover {
+    background: #005580;
+}
+
+#main_content a.prev.disabled,
+#main_content a.next.disabled,
+#main_content a.prev.disabled:hover,
+#main_content a.next.disabled:hover,
+#main_content a.prev.disabled:active,
+#main_content a.next.disabled:active {
+    background: #ccc;
+    color: #999;
+    text-decoration: none !important;
+}
+
+.tag_map_locator rect {
+    fill-opacity: 0;
+}
+
+#right_sidebar_content .tag_map_locator.current rect {
+    fill: #0000ff;
+    fill-opacity: 0.25;
+}
+
+#right_sidebar_content .tag_map_locator:hover rect {
+    fill: #ffff00;
+    fill-opacity: 0.65;
+}
+
+.page_locator rect {
+    fill-opacity: 0;
+}
+
+/*.page_locator.current rect {*/
+    /*fill: #0000ff;*/
+    /*fill-opacity: 0.5;*/
+/*}*/
+
+    body {
+    padding-top: 40px;
+    background: #ccc;
+    color: #333;
+}
+    .container-absolute {
+    position: absolute;
+    margin: 0;
+    left: 0;
+    right: 0;
+    top: 40px;
+    bottom: 0;
+    min-width: 640px;
+    min-height: 576px;
+    padding: 12px;
+}
+    div {
+    display: block;
+}
         .circle {
         background-color: #D8CF49;
         border-radius: 50%;
         border: 1px solid black;
     }
+    body{
+        background:#ccc;
+    }
 
     td {
-        padding-right: 10px;
-        padding-left: 10px;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+    .brand{
+        font-weight: 200;
+    color: #777777;
+    text-shadow: 0 1px 0 #ffffff;
     }
     </style>
 </head>
 
-<body onLoad="buildHtmlTable('#demo',[],-1)">
-    <form>
-        Select the Dataset:
-        <select id="mySelect">
-            <option value="NewsArticles">NewsArticles Dataset</option>
-            <option value="MovieScripts">MovieScripts Dataset</option>
-        </select>
-        <input type="button" onclick="getOption()" value="Click Me!">
-    </form>
-    <table id="demo">
-    </table>
-    <div id="chart2"></div>
-    <script>
-  
-    var dataset = "NewsArticles";
+<body onLoad="buildHtmlTable('#demo',[],-1)" class = "debug" data-gr-c-s-loaded = "true">
+    <div class="navbar  navbar-fixed-top">
+        <div class="navbar-inner">
+            <a class="brand" href="#">Serendip : Implementation and Extension</a>
+            <div class="nav" style="margin-left: 50px;">
+                <form>
+                   
 
-    function getOption() {
-        var obj = document.getElementById("mySelect");
-        dataset = obj.options[obj.selectedIndex].text;
-        $('#demo').fadeOut('slow');
-        $('#demo').empty();
+                
+                    Dataset:
+                    <select id="mySelect">
+                        <option value="NewsArticles">NewsArticles Dataset</option>
+                        <option value="MovieScripts">MovieScripts Dataset</option>
+                    </select>
+                     <input type="button" onclick="getOption()" value="Click Me!">
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                     <a id="openRankViewer" class="btn pull-right " title="Open RankViewer for this model." style="float:right" href= "rankviewer.html">RankViewer</a>
+                   
+                    </form>
+                    <!-- Actual modal div located at top of sidebar_content block -->
+            </div>
+        </div>
+        <div class="container-absolute">
+            <div class = "row-fluid spanv10" style="display: block;'box-sizing: border-box;float: left">
+
+                <div id = "main" class = "span8 spanv10">
+                    <div id="main_navbar" class="navbar navbar navbar-small">
+                            <div class="navbar-inner">
+                            
+    <span class="brand" id="matrixViewBreadcrumbs">
+        
+        Model
+    </span>
+                            </div>
+                        </div>
+        <div id = "main_content" class="span12 spanv10" style="margin-left: 50px;">
+            
+                <table id="demo">
+                </table>
+
+            
+        </div>
+    </div>
+    <div id="right_sidebar_top" class="span4 spanv5 omega">
+            
+                <div id="right_sidebar_top_navbar" class="navbar navbar navbar-small">
+                    <div class="navbar-inner">
+                        
+    <span class="brand" id="topicViewTitle" title="Double-click to rename topic">Topic <span id="selectedTopicNum"></span></span>
+     <a id="hideSelectedDoc" class="pull-right close" title="Hide this document in matrix">×</a>
+    
+
+                    </div>
+                </div>
+
+                <div id="right_sidebar_top_content" class="span12 spanv10">
+                    
+    <div class="tab-content">
+        
+        <div class="tab-pane active" id="chart2">
+            No Topic Selected
+        </div>
+    </div>
+
+                </div>
+            </div>
+                <div id="right_sidebar_bottom" class="span4 spanv5 omega-vertical-right">
+            
+                <div id="right_sidebar_bottom_navbar" class="navbar navbar navbar-small">
+                    <div class="navbar-inner">
+                        
+    <span class="brand" id="docViewTitle" title="Double-click to open in TextViewer" ondblclick="(function(){ window.open('textviewer.html') })()"><span id="docViewTypeLabel">Document</span> <span id="selectedDocNum"></span></span>
+    <a id="hideSelectedDoc" class="pull-right close" title="Hide this document in matrix">×</a>
+    
+
+                    </div>
+                </div>
+                <div id="right_sidebar_bottom_content" class="span12 spanv10">
+                    
+    <div class="tab-content" id="document-content">
+        <p>No Document Selected</p>
+    </div>
+
+                </div>
+            
+        </div>
+
+            
+        </div>
+            
+        </div>
+        </div>
+            <script>
+            var dataset = "NewsArticles";
+
+            function getOption() {
+                var obj = document.getElementById("mySelect");
+                dataset = obj.options[obj.selectedIndex].text;
+                $('#demo').fadeOut('slow');
+                $('#demo').empty();
                 localStorage.setItem('dataset', dataset);
 
-        buildHtmlTable('#demo', [], -1);
-        $('#demo').fadeIn('fast');
-        console.log(dataset);
-    }
-
-
-    function secondchart(topic) {
-        var filepath = "news-data/topic-word-rank-2.json";
-        if (dataset == "MovieScripts Dataset") {
-            filepath = "movie-data/topic-word-rank-1.json";
-        }
-        d3.json(filepath, function(data) {
-
-            var topic_word_data = data;
-            sorting_data = [];
-            topics = Object.keys(topic_word_data);
-            for (var i = 0; i < topics.length; i++) {
-                sorting_data.push({ key: topics[i], value: topic_word_data[topics[i]].length, rank: 0 });
+                buildHtmlTable('#demo', [], -1);
+                $('#demo').fadeIn('fast');
+                console.log(dataset);
             }
 
-            function sortBars(d) {
-                selected_word = d.name;
-                for (i = 0; i < topics.length; i++) {
-                    for (j = 0; j < topic_word_data[topics[i]].length; j++) {
-                        if (topic_word_data[topics[i]][j].name == selected_word) {
-                            for (k = 0; k < sorting_data.length; k++) {
-                                if (sorting_data[k].key == topics[i]) {
-                                    sorting_data[k].rank = topic_word_data[topics[i]][j].value;
+
+            function secondchart(topic) {
+                var filepath = "news-data/topic-word-rank-2.json";
+                if (dataset == "MovieScripts Dataset") {
+                    filepath = "movie-data/topic-word-rank-1.json";
+                }
+                d3.json(filepath, function(data) {
+
+                    var topic_word_data = data;
+                    sorting_data = [];
+                    topics = Object.keys(topic_word_data);
+                    for (var i = 0; i < topics.length; i++) {
+                        sorting_data.push({ key: topics[i], value: topic_word_data[topics[i]].length, rank: 0 });
+                    }
+
+                    function sortBars(d) {
+                        selected_word = d.name;
+                        for (i = 0; i < topics.length; i++) {
+                            for (j = 0; j < topic_word_data[topics[i]].length; j++) {
+                                if (topic_word_data[topics[i]][j].name == selected_word) {
+                                    for (k = 0; k < sorting_data.length; k++) {
+                                        if (sorting_data[k].key == topics[i]) {
+                                            sorting_data[k].rank = topic_word_data[topics[i]][j].value;
+                                        }
+                                    }
                                 }
+                            }
+                        }
+
+                        var sortOrder = false;
+                        sortOrder = !sortOrder;
+
+                        sortItems = function(a, b) {
+                            if (sortOrder) {
+                                return b.rank - a.rank;
+                            }
+                            return a.rank - b.rank;
+                        };
+                        svg.selectAll("rect")
+                            .sort(sortItems)
+                            .transition()
+                            .delay(function(d, i) {
+                                return i * 50;
+                            })
+                            .duration(1000)
+                            .attr("x", function(d, i) {
+                                return xScale(i);
+                            });
+
+                        svg.selectAll('text')
+                            .sort(sortItems)
+                            .transition()
+                            .delay(function(d, i) {
+                                return i * 50;
+                            })
+                            .duration(1000)
+                            .text(function(d) {
+                                return d.key;
+                            })
+                            .attr("text-anchor", "middle")
+                            .attr("x", function(d, i) {
+                                return xScale(i) + xScale.rangeBand() / 2;
+                            })
+                            .attr("y", function(d) {
+                                return h - yScale(d.value) + 14;
+                            });
+                    }
+
+                    
+                    var selected_topic = topic.toLowerCase();
+                    var seconddata = topic_word_data[selected_topic];
+                    console.log(selected_topic);
+                    data = seconddata.sort(function(a, b) {
+                        return parseFloat(b.value) - parseFloat(a.value);
+                    });
+                    for (i = 0; i < 10; i++) {
+                        if (i == 0) {
+                            top_ten_data = [{ name: seconddata[0].name, value: seconddata[0].value }];
+                        } else {
+                            top_ten_data.push(seconddata[i]);
+                        }
+                    }
+                    data = top_ten_data.sort(function(a, b) {
+                        return d3.ascending(a.value, b.value);
+                    })
+                    d3.select('#secondId').remove();
+                    //set up svg using margin conventions - we'll need plenty of room on the left for labels
+                    var margin = {
+                        top: 15,
+                        right: 100,
+                        bottom: 15,
+                        left: 100
+                    };
+
+                    var width = 350 - margin.left - margin.right,
+                        height = 200 - margin.top - margin.bottom;
+                    $('#chart2').empty();
+                    var svg = d3.select("#chart2").append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                        .append("g")
+                        .attr("id", "secondId")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                    var x = d3.scale.linear()
+                        .range([0, width])
+                        .domain([0, d3.max(data, function(d) {
+                            return d.value;
+                        })]);
+
+                    var y = d3.scale.ordinal()
+                        .rangeRoundBands([height, 0], .1)
+                        .domain(data.map(function(d) {
+                            return d.name;
+                        }));
+
+                    //make y axis to show bar names
+                    var yAxis = d3.svg.axis()
+                        .scale(y)
+                        //no tick marks
+                        .tickSize(0)
+                        .orient("left");
+
+                    var gy = svg.append("g")
+                        .attr("class", "y secondaxis")
+                        .call(yAxis)
+
+                    var bars = svg.selectAll(".bar")
+                        .data(data)
+                        .enter()
+                        .append("g")
+
+                    //append rects
+                    bars.append("rect")
+                        .attr("class", "bar")
+                        .attr("y", function(d) {
+                            return y(d.name);
+                        })
+                        .attr("height", y.rangeBand())
+                        .attr("x", 0)
+                        .attr("width", function(d) {
+                            return x(d.value);
+                        })
+                        .on({
+                            "mouseover": function(d) {
+                                d3.select(this).style("cursor", "pointer");
+                            },
+                            "mouseout": function(d) {
+                                d3.select(this).style("cursor", "default");
+                            }
+                        })
+                        .on("click", sortBars);
+
+                    //add a value label to the right of each bar
+                    bars.append("text")
+                        .attr("class", "label")
+                        //y position of the label is halfway down the bar
+                        .attr("y", function(d) {
+                            return y(d.name) + y.rangeBand() / 2 + 4;
+                        })
+                        //x position is 3 pixels to the right of the bar
+                        .attr("x", function(d) {
+                            return x(d.value) + 3;
+                        })
+                        .text(function(d) {
+                            return d.value;
+                        });
+                });
+            }
+
+
+
+
+
+            function buildHtmlTable(selector, order, flag) {
+                var filepath = "news-data/tutorial_conposition.csv";
+                if (dataset == "MovieScripts Dataset") {
+                    filepath = "movie-data/tutorial_conposition.csv";
+                }
+                var timer = 0;
+                var delay = 500;
+                d3.csv(filepath, function(myList) {
+                    var colorder, roworder = 0;
+                    if (flag == 0) {
+                        colorder = order;
+                    } else if (flag == 1) {
+                        roworder = order;
+                    }
+
+                    // Builds the HTML Table out of myList.
+                    var rowHash = myList[0];
+
+                    if (flag == 0) {
+                        var columns = addAllColumnHeaders(order, selector);
+                    } else {
+                        var columns = addAllColumnHeaders(rowHash, selector);
+
+                    }
+                    var rows = [];
+                    for (var o = 0; o < myList.length; o++) {
+                        rows.push(o);
+                    }
+                    if (flag == 1) {
+                        rows = roworder;
+                    }
+
+                    for (var i = 0; i < rows.length; i++) {
+                        var prevent = false;
+                        var row$ = $('<tr/>');
+
+                        var fileValue = myList[rows[i]][columns[0]];
+                        var fileName = myList[rows[i]][columns[1]];
+
+                        row$.append($('<td/>').html(fileValue));
+
+                        row$.append($('<td/>').html(fileName))
+                            .click(function(event) {
+                                event.preventDefault();
+                                timer = setTimeout(function() {
+                                    if (!prevent) {
+                                        console.log($(event.target).first().html());
+                                        docName = $(event.target).first().html();
+
+                                        setTimeout(documentClicked(docName), 300000);
+                                    }
+                                    prevent = false;
+                                }, delay);
+                            });
+                        row$.on('dblclick', function(e) {
+                            e.preventDefault();
+                            clearTimeout(timer);
+                            prevent = true;
+
+                            var clickedCell = $(e.target).closest("td");
+                            row$.attr("id", "user" + i);
+
+                            documentSelected(clickedCell.text(), myList);
+                        });
+
+
+                        for (var colIndex = 2; colIndex < columns.length; colIndex++) {
+                            var colhead = columns[colIndex];
+
+                            var numValue = myList[rows[i]][columns[colIndex]];
+
+                            row$.append($('<td/>')
+                                .append($('<div/>')
+                                    .attr("class", "circle")
+                                    .attr('style', 'width:' + (28 * numValue).toString() + 'px; height:' + (28 * numValue).toString() + 'px')))
+                        }
+
+                        $(selector).append(row$);
+                    }
+                    var ths = $('th').each(function() {
+                        var ths = this;
+                        var prevent = false;
+
+                        ths.addEventListener('click', function(e) {
+                            timer = setTimeout(function() {
+                                if (!prevent) {
+                                    
+                                    var n = $(e.target).first().html().replace("topic","");
+                                    var t = parseInt(n)-1;
+                                    secondchart("topic"+t);
+                                }
+                                prevent = false;
+                            }, delay);
+                        });
+                        ths.addEventListener('dblclick', function(e) {
+                            clearTimeout(timer);
+                            prevent = true;
+                            topicSelected($(e.target).first().html(), myList);
+                        });
+
+                    });
+
+                });
+
+
+            }
+
+
+            // Adds a header row to the table and returns the set of columns.
+            // Need to do union of keys from all records as some records may not contain
+            // all records.
+            function addAllColumnHeaders(rowHash, selector) {
+                var columnSet = [];
+                var headerTr$ = $('<tr/>');
+                //for (var i = 0; i < myList.length; i++) {
+                console.log(rowHash);
+                //for(var k=0;k<rowHash.length;k++){
+                for (var key in rowHash) {
+                    if ($.inArray(key, columnSet) == -1) {
+                        columnSet.push(key);
+                        headerTr$.append($('<th/>').html(key));
+                    }
+                }
+                //}
+                $(selector).append(headerTr$);
+                return columnSet;
+            }
+
+            setTimeout(myFun, 1000);
+
+            function myFun() {
+
+                $("#demo").tableDnD();
+                $("#demo").tableDnDUpdate();
+                $('#demo').dragtable();
+
+            }
+
+            function documentClicked(docName) {
+                $("#document-content").empty();
+                doctosend = docName;
+                localStorage.setItem('current_document', doctosend);
+                var te = document.getElementById("document-content");
+                
+                var table = document.createElement("table");
+                var td = document.createElement("tr");
+                var textnode = document.createTextNode("Filename: "+doctosend);
+                td.appendChild(textnode);
+                table.appendChild(td);
+
+                if(localStorage["dataset"]=="MovieScripts Dataset"){
+
+                var td = document.createElement("tr");
+                var textnode = document.createTextNode("This is a Movie Script document");
+                td.appendChild(textnode);
+                table.appendChild(td);
+                var temp = doctosend.replace("Script_","")
+                var td = document.createElement("tr");
+                var textnode = document.createTextNode("MovieName: "+temp);
+                td.appendChild(textnode);
+                table.appendChild(td);
+            }
+            else{
+
+                var td = document.createElement("tr");
+                var textnode = document.createTextNode("This is a news article scraped from the BBC");
+                td.appendChild(textnode);
+                table.appendChild(td);
+                
+                
+            }
+            te.appendChild(table);
+                //te.innerHTML =  doctosend;
+                
+            }
+
+            function documentSelected(docName, myList) {
+
+                selected_document = docName;
+                arrToSort = [];
+                for (key in Object.keys(myList)) {
+                    if (myList[key].filename == selected_document) {
+                        tempdict = {};
+                        index = [];
+
+                        tvalues = Object.values(myList[key]);
+
+                        for (i = 2; i < tvalues.length; i++) {
+                            arrToSort.push(tvalues[i]);
+                        }
+
+                        //tvalues = arrToSort;
+                        //console.log(tvalues);
+                        newarr = arrToSort.sort(function(a, b) { return b - a });
+                        index.push("sno");
+                        index.push("filename");
+                        tempdict["sno"] = "";
+                        tempdict["filename"] = "";
+                        for (var i = 0; i < arrToSort.length; i++) {
+                            if (tvalues.indexOf(newarr[i]) > 0) {
+                                var top = "topic";
+
+                                index.push(top + (tvalues.indexOf(newarr[i]) - 1));
+                                var te = top + (tvalues.indexOf(newarr[i]) - 1);
+
+                                tempdict[te] = "";
+                                tvalues[tvalues.indexOf(newarr[i])] = -1;
                             }
                         }
                     }
                 }
 
-                var sortOrder = false;
-                sortOrder = !sortOrder;
+                $('#demo').fadeOut('slow');
+                $('#demo').empty();
+                buildHtmlTable('#demo', tempdict, 0);
+                $('#demo').fadeIn('fast');
 
-                sortItems = function(a, b) {
-                    if (sortOrder) {
-                        return b.rank - a.rank;
-                    }
-                    return a.rank - b.rank;
-                };
-                svg.selectAll("rect")
-                    .sort(sortItems)
-                    .transition()
-                    .delay(function(d, i) {
-                        return i * 50;
-                    })
-                    .duration(1000)
-                    .attr("x", function(d, i) {
-                        return xScale(i);
-                    });
-
-                svg.selectAll('text')
-                    .sort(sortItems)
-                    .transition()
-                    .delay(function(d, i) {
-                        return i * 50;
-                    })
-                    .duration(1000)
-                    .text(function(d) {
-                        return d.key;
-                    })
-                    .attr("text-anchor", "middle")
-                    .attr("x", function(d, i) {
-                        return xScale(i) + xScale.rangeBand() / 2;
-                    })
-                    .attr("y", function(d) {
-                        return h - yScale(d.value) + 14;
-                    });
             }
 
+            function topicSelected(topicName, myList) {
 
-            var selected_topic = topic.toLowerCase();
-            var seconddata = topic_word_data[selected_topic];
-            data = seconddata.sort(function(a, b) {
-                return parseFloat(b.value) - parseFloat(a.value);
-            });
-            for (i = 0; i < 10; i++) {
-                if (i == 0) {
-                    top_ten_data = [{ name: seconddata[0].name, value: seconddata[0].value }];
-                } else {
-                    top_ten_data.push(seconddata[i]);
+                selected_topic = topicName;
+                arrToSort = [];
+                index = Object.keys(myList);
+
+                for (var i = 0; i < myList.length; i++) {
+
+                    arrToSort.push(myList[i][topicName]);
                 }
-            }
-            data = top_ten_data.sort(function(a, b) {
-                return d3.ascending(a.value, b.value);
-            })
-            d3.select('#secondId').remove();
-            //set up svg using margin conventions - we'll need plenty of room on the left for labels
-            var margin = {
-                top: 15,
-                right: 100,
-                bottom: 15,
-                left: 100
-            };
-
-            var width = 560 - margin.left - margin.right,
-                height = 200 - margin.top - margin.bottom;
-            $('#chart2').empty();
-            var svg = d3.select("#chart2").append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("id", "secondId")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            var x = d3.scale.linear()
-                .range([0, width])
-                .domain([0, d3.max(data, function(d) {
-                    return d.value;
-                })]);
-
-            var y = d3.scale.ordinal()
-                .rangeRoundBands([height, 0], .1)
-                .domain(data.map(function(d) {
-                    return d.name;
-                }));
-
-            //make y axis to show bar names
-            var yAxis = d3.svg.axis()
-                .scale(y)
-                //no tick marks
-                .tickSize(0)
-                .orient("left");
-
-            var gy = svg.append("g")
-                .attr("class", "y secondaxis")
-                .call(yAxis)
-
-            var bars = svg.selectAll(".bar")
-                .data(data)
-                .enter()
-                .append("g")
-
-            //append rects
-            bars.append("rect")
-                .attr("class", "bar")
-                .attr("y", function(d) {
-                    return y(d.name);
-                })
-                .attr("height", y.rangeBand())
-                .attr("x", 0)
-                .attr("width", function(d) {
-                    return x(d.value);
-                })
-                .on({
-                    "mouseover": function(d) {
-                        d3.select(this).style("cursor", "pointer");
-                    },
-                    "mouseout": function(d) {
-                        d3.select(this).style("cursor", "default");
-                    }
-                })
-                .on("click", sortBars);
-
-            //add a value label to the right of each bar
-            bars.append("text")
-                .attr("class", "label")
-                //y position of the label is halfway down the bar
-                .attr("y", function(d) {
-                    return y(d.name) + y.rangeBand() / 2 + 4;
-                })
-                //x position is 3 pixels to the right of the bar
-                .attr("x", function(d) {
-                    return x(d.value) + 3;
-                })
-                .text(function(d) {
-                    return d.value;
-                });
-        });
-    }
-
-
-
-
-
-    function buildHtmlTable(selector, order, flag) {
-        var filepath = "news-data/tutorial_conposition.csv";
-        if (dataset == "MovieScripts Dataset") {
-            filepath = "movie-data/tutorial_conposition.csv";
-        }
-        var timer = 0;
-        var delay = 500;
-        d3.csv(filepath, function(myList) {
-            var colorder, roworder = 0;
-            if (flag == 0) {
-                colorder = order;
-            } else if (flag == 1) {
-                roworder = order;
-            }
-
-            // Builds the HTML Table out of myList.
-            var rowHash = myList[0];
-
-            if (flag == 0) {
-                var columns = addAllColumnHeaders(order, selector);
-            } else {
-                var columns = addAllColumnHeaders(rowHash, selector);
-
-            }
-            var rows = [];
-            for (var o = 0; o < myList.length; o++) {
-                rows.push(o);
-            }
-            if (flag == 1) {
-                rows = roworder;
-            }
-
-            for (var i = 0; i < rows.length; i++) {
-                var prevent = false;
-                var row$ = $('<tr/>');
-               
-                var fileValue = myList[rows[i]][columns[0]];
-                var fileName = myList[rows[i]][columns[1]];
-
-                row$.append($('<td/>').html(fileValue));
-
-                row$.append($('<td/>').html(fileName))
-                    .click(function(event) {
-                        event.preventDefault();
-                        timer = setTimeout(function() {
-                            if (!prevent) {
-                                console.log($(event.target).first().html());
-                        docName = $(event.target).first().html();
-
-                        setTimeout(documentClicked(docName), 300000);
-                         }
-                            prevent = false;
-                        }, delay);
-                    });
-                 row$.on('dblclick', function(e) {
-                    e.preventDefault();
-                    clearTimeout(timer);
-                    prevent = true;
-
-                    var clickedCell = $(e.target).closest("td");
-                    row$.attr("id", "user" + i);
-                    documentSelected(clickedCell.text(), myList);
-                });
-
-
-                for (var colIndex = 2; colIndex < columns.length; colIndex++) {
-                    var colhead = columns[colIndex];
-
-                    var numValue = myList[rows[i]][columns[colIndex]];
-
-                    row$.append($('<td/>')
-                        .append($('<div/>')
-                            .attr("class", "circle")
-                            .attr('style', 'width:' + (28 * numValue).toString() + 'px; height:' + (28 * numValue).toString() + 'px')))
-                }
-
-                $(selector).append(row$);
-            }
-            var ths = $('th').each(function() {
-                var ths = this;
-                var prevent = false;
-
-                ths.addEventListener('click', function(e) {
-                    timer = setTimeout(function() {
-                        if (!prevent) {
-                            console.log("this");
-                            console.log($(e.target).first().html());
-                            secondchart($(e.target).first().html());
-                        }
-                        prevent = false;
-                    }, delay);
-                });
-                ths.addEventListener('dblclick', function(e) {
-                    clearTimeout(timer);
-                    prevent = true;
-                    topicSelected($(e.target).first().html(), myList);
-                });
-
-            });
-
-        });
-
-
-    }
-
-
-    // Adds a header row to the table and returns the set of columns.
-    // Need to do union of keys from all records as some records may not contain
-    // all records.
-    function addAllColumnHeaders(rowHash, selector) {
-        var columnSet = [];
-        var headerTr$ = $('<tr/>');
-        //for (var i = 0; i < myList.length; i++) {
-        console.log(rowHash);
-        //for(var k=0;k<rowHash.length;k++){
-        for (var key in rowHash) {
-            if ($.inArray(key, columnSet) == -1) {
-                columnSet.push(key);
-                headerTr$.append($('<th/>').html(key));
-            }
-        }
-        //}
-        $(selector).append(headerTr$);
-        return columnSet;
-    }
-
-    setTimeout(myFun, 1000);
-
-    function myFun() {
-
-        $("#demo").tableDnD();
-        $("#demo").tableDnDUpdate();
-        $('#demo').dragtable();
-
-    }
-
-    function documentClicked(docName) {
-        doctosend = docName;
-        localStorage.setItem('current_document', doctosend);
-        console.log("hoi");
-        console.log(doctosend);
-        window.open('textviewer.html')
-    }
-
-    function documentSelected(docName, myList) {
-        selected_document = docName;
-        arrToSort = [];
-        for (key in Object.keys(myList)) {
-            if (myList[key].filename == selected_document) {
-                tempdict = {};
-                index = [];
-
-                tvalues = Object.values(myList[key]);
-
-                for (i = 2; i < tvalues.length; i++) {
-                    arrToSort.push(tvalues[i]);
-                }
-
-                //tvalues = arrToSort;
-                //console.log(tvalues);
-                newarr = arrToSort.sort(function(a, b) { return b - a });
-                index.push("sno");
-                index.push("filename");
-                tempdict["sno"] = "";
-                tempdict["filename"] = "";
+                var ty = [];
                 for (var i = 0; i < arrToSort.length; i++) {
-                    if (tvalues.indexOf(newarr[i]) > 0) {
-                        var top = "topic";
-                       
-                        index.push(top + (tvalues.indexOf(newarr[i]) - 1));
-                        var te = top + (tvalues.indexOf(newarr[i]) - 1);
-
-                        tempdict[te] = "";
-                        tvalues[tvalues.indexOf(newarr[i])] = -1;
+                    ty.push(arrToSort[i]);
+                }
+                newarr = arrToSort.sort(function(a, b) { return b - a });
+                tempdict = [];
+                for (var i = 0; i < arrToSort.length; i++) {
+                    if (ty.indexOf(newarr[i]) >= 0) {
+                        tempdict.push(ty.indexOf(newarr[i]));
+                        ty[ty.indexOf(newarr[i])] = -1;
                     }
                 }
+
+                $('#demo').fadeOut('slow');
+                $('#demo').empty();
+                buildHtmlTable('#demo', tempdict, 1);
+                $('#demo').fadeIn('fast');
+
             }
-        }
-
-        $('#demo').fadeOut('slow');
-        $('#demo').empty();
-        buildHtmlTable('#demo', tempdict, 0);
-        $('#demo').fadeIn('fast');
-
-    }
-
-    function topicSelected(topicName, myList) {
-
-        selected_topic = topicName;
-        arrToSort = [];
-        index = Object.keys(myList);
-
-        for (var i = 0; i < myList.length; i++) {
-
-            arrToSort.push(myList[i][topicName]);
-        }
-        var ty = [];
-        for (var i = 0; i < arrToSort.length; i++) {
-            ty.push(arrToSort[i]);
-        }
-        newarr = arrToSort.sort(function(a, b) { return b - a });
-        tempdict = [];
-        for (var i = 0; i < arrToSort.length; i++) {
-            if (ty.indexOf(newarr[i]) >= 0) {
-                tempdict.push(ty.indexOf(newarr[i]));
-                ty[ty.indexOf(newarr[i])] = -1;
-            }
-        }
-
-        $('#demo').fadeOut('slow');
-        $('#demo').empty();
-        buildHtmlTable('#demo', tempdict, 1);
-        $('#demo').fadeIn('fast');
-
-    }
-    </script>
+            </script>
 </body>
 
 </html>
