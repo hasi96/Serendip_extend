@@ -14,7 +14,9 @@
     <link rel="stylesheet" type="text/css" href="bootstrap.css"/>
     <link rel="stylesheet" type="text/css" href="custom.css"/>
     <style>
-   
+   tr{
+    cursor:move;
+   }
     </style>
 </head>
 
@@ -295,6 +297,7 @@
                         .text(function(d) {
                             return d.value;
                         });
+                        setTimeout(myFun, 1000);
                 });
             }
 
@@ -303,6 +306,8 @@
 
 
             function buildHtmlTable(selector, order, flag) {
+                            setTimeout(myFun, 1000);
+
                 var filepath = "news-data/tutorial_conposition.csv";
                 if (dataset == "MovieScripts Dataset") {
                     filepath = "movie-data/tutorial_conposition.csv";
@@ -518,7 +523,7 @@
                 $('#demo').empty();
                 buildHtmlTable('#demo', tempdict, 0);
                 $('#demo').fadeIn('fast');
-
+                setTimeout(myFun, 1000);
             }
 
             function topicSelected(topicName, myList) {
@@ -548,6 +553,7 @@
                 $('#demo').empty();
                 buildHtmlTable('#demo', tempdict, 1);
                 $('#demo').fadeIn('fast');
+                setTimeout(myFun, 1000);
 
             }
             </script>
