@@ -2,14 +2,15 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<script src="https://d3js.org/d3.v3.min.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<style>
-		body{
-			background-color: rgba(225, 221, 156, 1);
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="custom.css" />
+    <link rel="stylesheet" type="text/css" href="bootstrap.css" />
+    <style>
+        body{
 			font-family: "Arial", sans-serif;
 		}
 		/********************FIRST CHART CSS***********************/
@@ -68,295 +69,305 @@
 	</style>
 </head>
 
-<body>
-	<h1 class="h">Serendip</h1>
-	<h2 class="h">RankViewer</h2><br><br><br>
-	<!-- <div class="container">
-		<div class="form-group">
-		  <div class="input-group">
-		    <input class="form-control" name="q" type="text" placeholder="Enter words separated by spaces">
-		    
-		    <div class="input-group-btn">
-		      <select class="form-control" name="category">
-		        <option>Red</option>
-		        <option>Blue</option>
-		        <option>Green</option>
-		      </select>
-		    </div>
-		   </div>
-		</div>
-		<div class="form-group">
-			<button type="submit" class="btn btn-default">Add</button>
-		</div>
-	</div><br><br><br> -->
-	<div class="container">
-		<div class="row">
-		    <svg height="500" class="col-md-6 chart1"></svg>
-		    <svg height="500" class="col-md-6 chart2"></svg>
-  		</div>
-	</div>
-	
-	<script>
-		var datasetFromHome = localStorage['current_dataset'];
-		dataset = "news-data/topic-word-rank-2.json";
-
-		if (datasetFromHome=="Movie Dataset"){
-			dataset = "movie-data/topic-word-rank-1.json";
-		}
-		else if(datasetFromHome=="News Dataset"){
-			dataset = "news-data/topic-word-rank-2.json";
-		}
-		var wordIsSelectedFromTV = localStorage['wordclicked'];
-		localStorage.removeItem('wordclicked');
-
-		d3.json(dataset, function(data) {
-  			var topic_word_data = data;
-			sorting_data = [];
-			topics = Object.keys(topic_word_data);
-			for (var i=0;i<topics.length;i++){
-				sorting_data.push({key:topics[i],value:topic_word_data[topics[i]].length,rank:0});
-			}
-			function sortBars(d,wordFromTextViewer,flag){
-				if(flag==-1){
-					selected_word = d.name;
-					for (i=0;i<topics.length;i++){
-						for (j=0;j<topic_word_data[topics[i]].length;j++){
-							if(topic_word_data[topics[i]][j].name == selected_word){
-								for(k=0;k<sorting_data.length;k++){
-									if (sorting_data[k].key == topics[i]){
-										sorting_data[k].rank = topic_word_data[topics[i]][j].value;
-									}
-								}
-							}
-						}
-					}
-				}
-				else{
-					selected_word = wordFromTextViewer;
-					for (i=0;i<topics.length;i++){
-						for (j=0;j<topic_word_data[topics[i]].length;j++){
-							if(topic_word_data[topics[i]][j].name == selected_word){
-								for(k=0;k<sorting_data.length;k++){
-									if (sorting_data[k].key == topics[i]){
-										sorting_data[k].rank = topic_word_data[topics[i]][j].value;
-									}
-								}
-							}
-						}
-					}
-				}
-				var sortOrder = false;
-			    sortOrder = !sortOrder;
-			    
-			    sortItems = function (a, b) {
-			        if (sortOrder) {
-			            return b.rank - a.rank;
-			        }
-			        return a.rank - b.rank;
-			    };
-			    svg.selectAll("rect")
-			        .sort(sortItems)
-			        .transition()
-			        .delay(function (d, i) {
-			        	return i * 50;
-			    	})
-			        .duration(1000)
-			        .attr("x", function (d, i) {
-			        return xScale(i);});
-			    
-
-			    svg.selectAll('text')
-			        .sort(sortItems)
-			        .transition()
-			        .delay(function (d, i) {
-			        return i * 50;
-			    })
-			        .duration(1000)
-			        .text(function (d) {
-			        return "t"+d.key.substring(5,d.key.length);
-			    })
-			        .attr("text-anchor", "middle")
-			        .attr("x", function (d, i) {
-			        return xScale(i) + xScale.rangeBand() / 2;
-			    })
-			        .attr("y", function (d) {
-			        return h - yScale(d.value) + 14;
-			    });
-		}
-
-			//***************************************THIS IS SECOND BAR CHART CODE*********************************************
-			function secondchart(d){
-
-				var selected_topic = d.key;
-				var seconddata = topic_word_data[selected_topic];
-				data = seconddata.sort(function(a, b) {
-    				return parseFloat(b.value) - parseFloat(a.value);
-				});
-				for (i=0;i<10;i++){
-					if (i==0){
-						top_ten_data = [{name:seconddata[0].name,value:seconddata[0].value}];
-					}
-					else{
-						top_ten_data.push(seconddata[i]);
-					}
-				}
-				data = top_ten_data.sort(function (a, b) {
-            		return d3.ascending(a.value, b.value);
-        		})
-				d3.select('#secondId').remove();
-		 
-		        var margin = {
-		            top: 15,
-		            right: 100,
-		            bottom: 15,
-		            left: 100
-		        };
-
-		        var width = 560 - margin.left - margin.right,
-		            height = 200 - margin.top - margin.bottom;
-
-		        var svg = d3.select(".chart2").append("svg")
-		            .attr("width", width + margin.left + margin.right)
-		            .attr("height", height + margin.top + margin.bottom)
-		            .append("g")
-		            .attr("id","secondId")
-		            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-		        var x = d3.scale.linear()
-		            .range([0, width])
-		            .domain([0, d3.max(data, function (d) {
-		                return d.value;
-		            })]);
-
-		        var y = d3.scale.ordinal()
-		            .rangeRoundBands([height, 0], .1)
-		            .domain(data.map(function (d) {
-		                return d.name;
-		            }));
-
-		        var yAxis = d3.svg.axis()
-		            .scale(y)
-		            .tickSize(0)
-		            .orient("left");
-
-		        var gy = svg.append("g")
-		            .attr("class", "y secondaxis")
-		            .call(yAxis)
-
-		        var bars = svg.selectAll(".bar")
-		            .data(data)
-		            .enter()
-		            .append("g")
-
-		        bars.append("rect")
-		            .attr("class", "bar")
-		            .attr("y", function (d) {
-		                return y(d.name);
-		            })
-		            .attr("height",y.rangeBand())
-		            .attr("x", 0)
-		            .attr("width", function (d) {
-		                return x(d.value);
-		            })
-		            .on({
-				      "mouseover": function(d) {
-				        d3.select(this).style("cursor", "pointer"); 
-				      },
-				      "mouseout": function(d) {
-				        d3.select(this).style("cursor", "default"); 
-				      }
-				    })
-				    .on("click",function(d){return sortBars(d,"",-1);});
-
-		        bars.append("text")
-		            .attr("class", "label")
-		            //y position of the label is halfway down the bar
-		            .attr("y", function (d) {
-		                return y(d.name) + y.rangeBand() / 2 + 4;
-		            })
-		            //x position is 3 pixels to the right of the bar
-		            .attr("x", function (d) {
-		                return x(d.value) + 3;
-		            })
-		            .text(function (d) {
-		                return d.value;
-		            });
-			}
-			
-			//**************************************THIS IS WHERE FIRST BAR CHART CODE STARTS************************************************** 
-			
-			var w = 440; 
-				h = 200; 
-
-			var xScale = d3.scale.ordinal()
-				.domain(d3.range(sorting_data.length))
-				.rangeRoundBands([0, w], 0.05); 
-
-			var yScale = d3.scale.linear()
-				.domain([0, d3.max(sorting_data, function(d) {return d.value;})])
-				.range([0, h]);
-
-			var key = function(d) {
-				return d.key;
-			};
-
-		//Create SVG element
-		var svg = d3.select(".chart1")
-					.append("svg")
-					.attr("width", w)
-					.attr("height", h);
-
-		//Create bars
-		svg.selectAll("rect")
-		   .data(sorting_data, key)
-		   .enter()
-		   .append("rect")
-		   .attr("x", function(d, i) {
-				return xScale(i);
-		   })
-		   .attr("y", function(d) {
-				return h - yScale(d.value);
-		   })
-		   .attr("fill", "#8b8a84")
-		   .attr("width", xScale.rangeBand())
-		   .attr("height", function(d) {
-				return yScale(d.value);
-		   })
-		   .on({
-		      "mouseover": function(d) {
-		        d3.select(this).style("cursor", "pointer"); 
-		      },
-		      "mouseout": function(d) {
-		        d3.select(this).style("cursor", "default"); 
-		      }
-		    })
-		   .on("click",secondchart);
-
-		//Create labels
-		svg.selectAll("text")
-		   .data(sorting_data, key)
-		   .enter()
-		   .append("text")
-		   .text(function(d) {
-				return "t"+d.key.substring(5,d.key.length);
-		   })
-		   .attr("text-anchor", "middle")
-		   .attr("x", function(d, i) {
-				return xScale(i) + xScale.rangeBand()/2;
-		   })
-		   .attr("y", function(d) {
-				return h - yScale(d.value) + 14;
-		   })
-		   .attr("font-family", "sans-serif") 
-		   .attr("font-size", "11px")
-		   .attr("fill", "black");
-
-		if(wordIsSelectedFromTV){
-			var wordFromTextViewer = localStorage['wordToRV'];
-			localStorage.removeItem('wordToRV');
-			sortBars("",wordFromTextViewer,1);
-		}
-	});	
-	</script>
+<body class="debug" data-gr-c-s-loaded="true">
+    <div class="navbar  navbar-fixed-top" style="z-index:-30;">
+        <div class="navbar-inner">
+            <a class="brand" href="#">Serendip : Implementation and Extension</a>
+            <div class="nav" style="margin-left: 50px;">
+                <form>
+                    Dataset:
+                    <select id="mySelect">
+                        <option value="NewsArticles">NewsArticles Dataset</option>
+                        <option value="MovieScripts">MovieScripts Dataset</option>
+                    </select>
+                    <input type="button" onclick="getOption()" value="Change Dataset">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a id="openRankViewer" class="btn pull-right " title="Open RankViewer for this model." style="float:right" href= "rankviewer.html">RankViewer</a>
+                </form>
+                <!-- Actual modal div located at top of sidebar_content block -->
+            </div>
+        </div>
+    </div>
+    <div class="container-absolute">
+        <div class="row-fluid spanv10" style="display: block;box-sizing: border-box;float: left">
+            <div id="main" class="span7 spanv5" >
+                <div id="main_navbar" class="navbar navbar navbar-small">
+                    <div class="navbar-inner">
+                        <span class="brand" id="matrixViewBreadcrumbs">RankViewer</span>
+                    </div>
+                </div>
+                <div id="main_content" class="span7 spanv5" style="margin-left: 50px;">
+                    <svg height="500" class="chart1"></svg>
+                </div>
+            </div>
+                <div id="right_sidebar_top" class="span5 spanv5 omega">
+                    <svg height="500" class="chart2"></svg>
+                </div>
+            </div>
+    </div>
 </body>
 
+</html>
+<script>
+var datasetFromHome = localStorage['current_dataset'];
+dataset = "news-data/topic-word-rank-2.json";
+
+if (datasetFromHome == "Movie Dataset") {
+    dataset = "movie-data/topic-word-rank-1.json";
+} else if (datasetFromHome == "News Dataset") {
+    dataset = "news-data/topic-word-rank-2.json";
+}
+var wordIsSelectedFromTV = localStorage['wordclicked'];
+localStorage.removeItem('wordclicked');
+
+d3.json(dataset, function(data) {
+    var topic_word_data = data;
+    sorting_data = [];
+    topics = Object.keys(topic_word_data);
+    for (var i = 0; i < topics.length; i++) {
+        sorting_data.push({ key: topics[i], value: topic_word_data[topics[i]].length, rank: 0 });
+    }
+
+    function sortBars(d, wordFromTextViewer, flag) {
+        if (flag == -1) {
+            selected_word = d.name;
+            for (i = 0; i < topics.length; i++) {
+                for (j = 0; j < topic_word_data[topics[i]].length; j++) {
+                    if (topic_word_data[topics[i]][j].name == selected_word) {
+                        for (k = 0; k < sorting_data.length; k++) {
+                            if (sorting_data[k].key == topics[i]) {
+                                sorting_data[k].rank = topic_word_data[topics[i]][j].value;
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            selected_word = wordFromTextViewer;
+            for (i = 0; i < topics.length; i++) {
+                for (j = 0; j < topic_word_data[topics[i]].length; j++) {
+                    if (topic_word_data[topics[i]][j].name == selected_word) {
+                        for (k = 0; k < sorting_data.length; k++) {
+                            if (sorting_data[k].key == topics[i]) {
+                                sorting_data[k].rank = topic_word_data[topics[i]][j].value;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        var sortOrder = false;
+        sortOrder = !sortOrder;
+
+        sortItems = function(a, b) {
+            if (sortOrder) {
+                return b.rank - a.rank;
+            }
+            return a.rank - b.rank;
+        };
+        svg.selectAll("rect")
+            .sort(sortItems)
+            .transition()
+            .delay(function(d, i) {
+                return i * 50;
+            })
+            .duration(1000)
+            .attr("x", function(d, i) {
+                return xScale(i);
+            });
+
+
+        svg.selectAll('text')
+            .sort(sortItems)
+            .transition()
+            .delay(function(d, i) {
+                return i * 50;
+            })
+            .duration(1000)
+            .text(function(d) {
+                return "t" + d.key.substring(5, d.key.length);
+            })
+            .attr("text-anchor", "middle")
+            .attr("x", function(d, i) {
+                return xScale(i) + xScale.rangeBand() / 2;
+            })
+            .attr("y", function(d) {
+                return h - yScale(d.value) + 14;
+            });
+    }
+
+    //***************************************THIS IS SECOND BAR CHART CODE*********************************************
+    function secondchart(d) {
+
+        var selected_topic = d.key;
+        var seconddata = topic_word_data[selected_topic];
+        data = seconddata.sort(function(a, b) {
+            return parseFloat(b.value) - parseFloat(a.value);
+        });
+        for (i = 0; i < 10; i++) {
+            if (i == 0) {
+                top_ten_data = [{ name: seconddata[0].name, value: seconddata[0].value }];
+            } else {
+                top_ten_data.push(seconddata[i]);
+            }
+        }
+        data = top_ten_data.sort(function(a, b) {
+            return d3.ascending(a.value, b.value);
+        })
+        d3.select('#secondId').remove();
+
+        var margin = {
+            top: 15,
+            right: 100,
+            bottom: 15,
+            left: 100
+        };
+
+        var width = 560 - margin.left - margin.right,
+            height = 200 - margin.top - margin.bottom;
+
+        var svg = d3.select(".chart2").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("id", "secondId")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var x = d3.scale.linear()
+            .range([0, width])
+            .domain([0, d3.max(data, function(d) {
+                return d.value;
+            })]);
+
+        var y = d3.scale.ordinal()
+            .rangeRoundBands([height, 0], .1)
+            .domain(data.map(function(d) {
+                return d.name;
+            }));
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .tickSize(0)
+            .orient("left");
+
+        var gy = svg.append("g")
+            .attr("class", "y secondaxis")
+            .call(yAxis)
+
+        var bars = svg.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("g")
+
+        bars.append("rect")
+            .attr("class", "bar")
+            .attr("y", function(d) {
+                return y(d.name);
+            })
+            .attr("height", y.rangeBand())
+            .attr("x", 0)
+            .attr("width", function(d) {
+                return x(d.value);
+            })
+            .on({
+                "mouseover": function(d) {
+                    d3.select(this).style("cursor", "pointer");
+                },
+                "mouseout": function(d) {
+                    d3.select(this).style("cursor", "default");
+                }
+            })
+            .on("click", function(d) { return sortBars(d, "", -1); });
+
+        bars.append("text")
+            .attr("class", "label")
+            //y position of the label is halfway down the bar
+            .attr("y", function(d) {
+                return y(d.name) + y.rangeBand() / 2 + 4;
+            })
+            //x position is 3 pixels to the right of the bar
+            .attr("x", function(d) {
+                return x(d.value) + 3;
+            })
+            .text(function(d) {
+                return d.value;
+            });
+    }
+
+    //**************************************THIS IS WHERE FIRST BAR CHART CODE STARTS************************************************** 
+
+    var w = 440;
+    h = 200;
+
+    var xScale = d3.scale.ordinal()
+        .domain(d3.range(sorting_data.length))
+        .rangeRoundBands([0, w], 0.05);
+
+    var yScale = d3.scale.linear()
+        .domain([0, d3.max(sorting_data, function(d) { return d.value; })])
+        .range([0, h]);
+
+    var key = function(d) {
+        return d.key;
+    };
+
+    //Create SVG element
+    var svg = d3.select(".chart1")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h);
+
+    //Create bars
+    svg.selectAll("rect")
+        .data(sorting_data, key)
+        .enter()
+        .append("rect")
+        .attr("x", function(d, i) {
+            return xScale(i);
+        })
+        .attr("y", function(d) {
+            return h - yScale(d.value);
+        })
+        .attr("fill", "#8b8a84")
+        .attr("width", xScale.rangeBand())
+        .attr("height", function(d) {
+            return yScale(d.value);
+        })
+        .on({
+            "mouseover": function(d) {
+                d3.select(this).style("cursor", "pointer");
+            },
+            "mouseout": function(d) {
+                d3.select(this).style("cursor", "default");
+            }
+        })
+        .on("click", secondchart);
+
+    //Create labels
+    svg.selectAll("text")
+        .data(sorting_data, key)
+        .enter()
+        .append("text")
+        .text(function(d) {
+            return "t" + d.key.substring(5, d.key.length);
+        })
+        .attr("text-anchor", "middle")
+        .attr("x", function(d, i) {
+            return xScale(i) + xScale.rangeBand() / 2;
+        })
+        .attr("y", function(d) {
+            return h - yScale(d.value) + 14;
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "11px")
+        .attr("fill", "black");
+
+    if (wordIsSelectedFromTV) {
+        var wordFromTextViewer = localStorage['wordToRV'];
+        localStorage.removeItem('wordToRV');
+        sortBars("", wordFromTextViewer, 1);
+    }
+});
+</script>
