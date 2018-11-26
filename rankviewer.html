@@ -102,11 +102,10 @@
 </html>
 <script>
 var datasetFromHome = localStorage['dataset'];
-dataset = "news-data/topic-word-rank-2.json";
-
-if (datasetFromHome == "Movie Dataset") {
+console.log(datasetFromHome);
+if (datasetFromHome == "MovieScripts Dataset") {
     dataset = "movie-data/topic-word-rank-1.json";
-} else if (datasetFromHome == "News Dataset") {
+} else if (datasetFromHome == "NewsArticles Dataset") {
     dataset = "news-data/topic-word-rank-2.json";
 }
 var wordIsSelectedFromTV = localStorage['wordclicked'];
