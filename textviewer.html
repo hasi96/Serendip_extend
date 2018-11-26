@@ -465,7 +465,7 @@ function linechart() {
 
     var sumid = "news-data/news-summary/" + localStorage['current_document'];
     if (localStorage['dataset'] == "MovieScripts Dataset") {
-        sumid = "movie-data/movie-summary/" + localStorage['current_document'];
+        sumid = "movie-data/movie-summary/" + localStorage['current_document']+".txt";
     }
     $.get(sumid, function(data) {
         document.getElementById("summary").innerHTML = "<h5>Generated Abstractive Summary</h5>" + data;
