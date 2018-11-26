@@ -97,7 +97,6 @@
 #read{
     height: auto;
     overflow: auto;
-    white-space: pre-wrap; 
 }
 table.td{
     overflow:auto;
@@ -157,25 +156,94 @@ div.tooltip:after {
 
     </script>
     <link rel="stylesheet" type="text/css" 
-    href="bootstrap.min.css">
+    href="bootstrap.min.css"/>
     <script src="jquery.min.js"></script>
     <script src="bootstrap.min.js"></script>
     <script src="jquery-1.11.0.min.js"></script>
     <script src="d3.v3.min.js"></script>
     <script src="jquery.min.js"></script>
     <script src="jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="custom.css"/>
+         <link rel="stylesheet" type="text/css" href="bootstrap.css"/>
 
-<body>
-    <table>
-        <tr>
-            <td>
-                <div id="sidetable" class="ex1" style="width:250px; overflow-y: scroll;">
+
+<body class = "debug" >
+    <!-- <table> -->
+        <!-- <tr> -->
+            <!-- <td> -->
+                    <div class="navbar  navbar-fixed-top" style="z-index:-30;">
+        <div class="navbar-inner">
+            <a class="brand" href="#">Serendip : Implementation and Extension</a>
+            <div class="nav" style="margin-left: 50px;">
+                <form>
+                   
+
+                
+                    Dataset:
+                    <select id="mySelect">
+                        <option value="NewsArticles">NewsArticles Dataset</option>
+                        <option value="MovieScripts">MovieScripts Dataset</option>
+                    </select>
+                     <input type="button" onclick="getOption()" value="Click Me!">
+                    
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                     <a id="openRankViewer" class="btn pull-right " title="Open RankViewer for this model." style="float:right" href= "rankviewer.html">RankViewer</a>
+                   
+                    </form>
+                    <!-- Actual modal div located at top of sidebar_content block -->
+            </div>
+        </div>
+    </div>
+        <div class="container-absolute">
+            <div class = "row-fluid spanv12" style="display: block;box-sizing: border-box;float: left;overflow: auto; display: block; overflow-y:scroll">
+
+                <div id="sidebar" class="span2 spanv12" >
                 </div>
-            </td>
-            <td>
-                <button type="button" onclick="getSummary()">Generate Summary and Compare!</button>
-                <div id="read" class="ex1" style=" overflow-y: scroll; overflow: auto">
-                    <script>
+            <!-- </td> -->
+            <!-- <td> -->
+                <div id = "main" class = "span7 spanv12">
+                <div id="main_navbar" class="navbar navbar navbar-small">
+                            <div class="navbar-inner">
+                            
+    <span class="brand" id ="brand"></span>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;
+                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;
+    <button type="button" onclick="getSummary()">Generate Summary and Compare!</button>
+
+                            </div>
+                        </div>
+                
+               
+
+                <br>
+                <br>
+
+
+                <div id="main_content" class=" span12 spanv6" style="overflow:auto">
+                    </div>
+                
+
+                <div id="summary" class=" span12 spanv6" style="overflow:auto">
+                </div>
+            </div>
+            <!-- </td>
+            <td> -->
+                <div id="rightgraph" class ="span3 spanv12" style="overflow:auto" >
+                </div>
+            </div>
+        </div>
+    
+            <!-- </td>
+        </tr> -->
+</body>
+<script>
+    var t = document.getElementById("brand");
+    t.appendChild(document.createTextNode("Document: " +localStorage["current_document"]));
                     //loading document here
                     $(document).ready(function read1() {
                         //var id = "news-data/news/"+getUrlVars()["search"]+".txt";
@@ -194,7 +262,7 @@ div.tooltip:after {
                                 btn.appendChild(t);
 
                                 btn.onclick = function(e) { return rankviewinp($(e.target)) };
-                                document.getElementById("read").appendChild(btn).append(' ');
+                                document.getElementById("main_content").appendChild(btn).append(' ');
 
                             };
                         }, "text");
@@ -208,16 +276,6 @@ div.tooltip:after {
                         window.open('rankviewer.html')
                     };
                     </script>
-                </div>
-                <div id="summary">
-                </div>
-            </td>
-            <td>
-                <div id="rightgraph" style="width:300px">
-                </div>
-            </td>
-        </tr>
-</body>
 <script>
     linegraph();
 function getSummary() {
@@ -240,7 +298,7 @@ var x = d3.scale.linear().range([0, w]),
     y = d3.scale.ordinal().rangeRoundBands([0, h], .1);
 var xAxis = d3.svg.axis().scale(x).orient("top").tickSize(-h),
     yAxis = d3.svg.axis().scale(y).orient("left").tickSize(0);
-var svg = d3.select("#sidetable").append("svg")
+var svg = d3.select("#sidebar").append("svg")
     .attr("width", w + m[1] + m[3])
     .attr("height", h + m[0] + m[2])
     .append("g")
@@ -388,12 +446,12 @@ d3.csv(filepath, function(error, data) {
                             if ((top + topic_word_count[i][1]) == selected_topic) {
 
                                 var s = d.word;
-                                var div = document.getElementById('read').innerHTML;
+                                var div = document.getElementById('main_content').innerHTML;
                                 var regex = new RegExp('\<span\>(' + topic_word_count[i][0] + ') \<\/span\>', 'ig');
                                 if (div.match(regex)) {
                                     var matches = div.match(regex);
                                     div = div.replace(regex, '<span onclick="(function(e){ return rankviewinp($(e.target)); })(event); " style="background-color:' + d.color + '">$1 </span>');
-                                    document.getElementById("read").innerHTML = div;
+                                    document.getElementById("main_content").innerHTML = div;
 
                                 }
                             }
@@ -448,7 +506,7 @@ function linechart() {
         }
         // set the dimensions and margins of the graph
         var margin = { top: 20, right: 40, bottom: 30, left: 50 },
-            width = 500 - margin.left - margin.right,
+            width = 600 - margin.left - margin.right,
             height = 960 - margin.top - margin.bottom;
 
         // the different dimensions in the data
@@ -478,7 +536,7 @@ function linechart() {
 
         // create the svg object
         var svg = d3.select("#rightgraph").append("svg")
-            .attr("height", height)
+            .attr("height",height)
             .append("g")
             .attr("transform",
                 "translate(" + margin.left + "," + margin.top + ")");
