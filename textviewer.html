@@ -200,7 +200,7 @@ div.tooltip:after {
                 </div>
             <!-- </td> -->
             <!-- <td> -->
-                <div id = "main" class = "span7 spanv12" style="width: 800px;height: 800px;margin-left: 10px;overflow: auto">
+                <div id = "main" class = "span6 spanv12" style="width: 800px;height: 800px;margin-left: 10px;overflow: auto">
                 <div id="main_navbar" class="navbar navbar navbar-small">
                             <div class="navbar-inner">
                             
@@ -431,6 +431,8 @@ d3.csv(filepath, function(error, data) {
                     .on("click", function(d) {
 
                         selected_doc = id.split(".")[0];
+                        console.log(selected_doc);
+
                         selected_topic = d.key;
                         var wordlist = [];
                         var op = 0.1;
