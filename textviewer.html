@@ -335,13 +335,8 @@ d3.csv(filepath, function(error, data) {
 
             var x = d3.scale.linear()
                 .range([0, 150])
-                .domain([0, d3.max(d, function(e) {
-                    if(e.value>=0)
-                    return e.value;
-                else{
-                    return 0;
-                }
-                })]);
+                .domain([0, 1]
+                );
 
             var y = d3.scale.ordinal()
                 .rangeRoundBands([height, 100], .1)
@@ -373,11 +368,8 @@ d3.csv(filepath, function(error, data) {
                 .attr("height", y.rangeBand() / 2)
                 .attr("x", 0)
                 .attr("width", function(d) {
-                    if(d.value>=0)
                     return x(d.value);
-                else{
-                    return 0;
-                }
+                
                 })
                 .attr("style", function(d, i) {
                     d.color = color(i);
