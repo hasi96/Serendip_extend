@@ -94,10 +94,7 @@
   stroke-width: 2px;
   opacity: 1.0;
 }
-#read{
-    height: auto;
-    overflow: auto;
-}
+
 table.td{
     overflow:auto;
 }
@@ -197,7 +194,7 @@ div.tooltip:after {
         </div>
     </div>
         <div class="container-absolute">
-            <div class = "row-fluid spanv12" style="display: block;box-sizing: border-box;float: left;overflow: auto; display: block; overflow-y:scroll">
+            <div class = "row-fluid spanv12" style="display: block;box-sizing: border-box;float: left">
 
                 <div id="sidebar" class="span2 spanv12" >
                 </div>
@@ -224,11 +221,11 @@ div.tooltip:after {
                 <br>
 
 
-                <div id="main_content" class=" span12 spanv6" style="overflow:auto">
+                <div id="main_content" class=" span12 spanv6" >
                     </div>
                 
 
-                <div id="summary" class=" span12 spanv6" style="overflow:auto">
+                <div id="summary" class=" span12 spanv6" >
                 </div>
             </div>
             <!-- </td>
@@ -430,7 +427,6 @@ d3.csv(filepath, function(error, data) {
 
                 });
 
-                console.log(topic_word_count);
                 bar.selectAll("rect")
                     .on("click", function(d) {
 
@@ -438,11 +434,9 @@ d3.csv(filepath, function(error, data) {
                         selected_topic = d.key;
                         var wordlist = [];
                         var op = 0.1;
-                        var top = "Topic";
+                        var top = "topic";
                         for (var i = 0; i < topic_word_count.length; i++) {
-                            if(localStorage['dataset'] == "MovieScripts Dataset"){
-                                top = "topic";
-                            }
+                            
                             if ((top + topic_word_count[i][1]) == selected_topic) {
 
                                 var s = d.word;
