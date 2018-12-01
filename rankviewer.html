@@ -340,7 +340,7 @@ d3.json(dataset, function(data) {
         .enter()
         .append("text")
         .text(function(d) {
-            return "t" + d.key.substring(5, d.key.length);
+            return "t" + (parseInt(d.key.substring(5, d.key.length))+1).toString();
         })
         .attr("text-anchor", "middle")
         .attr("x", function(d, i) {
