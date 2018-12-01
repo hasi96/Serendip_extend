@@ -126,6 +126,9 @@
                 localStorage.setItem('dataset', dataset);
 
                 buildHtmlTable('#demo', [], -1);
+                 $("#demo").tableDnD();
+                $("#demo").tableDnDUpdate();
+                $('#demo').dragtable();
                 $('#demo').fadeIn('fast');
                 console.log(dataset);
             }
@@ -523,6 +526,9 @@
                 $('#demo').empty();
                 buildHtmlTable('#demo', tempdict, 0);
                 $('#demo').fadeIn('fast');
+                 $("#demo").tableDnD();
+                $("#demo").tableDnDUpdate();
+                $('#demo').dragtable();
                 setTimeout(myFun, 1000);
             }
 
@@ -553,6 +559,9 @@
                 $('#demo').empty();
                 buildHtmlTable('#demo', tempdict, 1);
                 $('#demo').fadeIn('fast');
+                 $("#demo").tableDnD();
+                $("#demo").tableDnDUpdate();
+                $('#demo').dragtable();
                 setTimeout(myFun, 1000);
 
             }
