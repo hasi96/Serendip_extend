@@ -71,7 +71,7 @@
                 <div id="right_sidebar_top_navbar" class="navbar navbar navbar-small">
                     <div class="navbar-inner">
                         
-    <span class="brand" id="topicViewTitle">Topic <span id="selectedTopicNum"></span></span>
+    <span class="brand" id="topicViewTitle">Topic</span>
      <a id="hideSelectedDoc" class="pull-right close" title="Hide this document in matrix">×</a>
     
 
@@ -94,7 +94,7 @@
                 <div id="right_sidebar_bottom_navbar" class="navbar navbar navbar-small">
                     <div class="navbar-inner">
                         
-    <span class="brand" id="docViewTitle" title="Double-click to open in TextViewer" ondblclick="(function(){ window.open('textviewer.html') })()"><span id="docViewTypeLabel">Document</span> <span id="selectedDocNum"></span></span>
+    <span class="brand" id="docViewTitle" title="Double-click to open in TextViewer" ondblclick="(function(){ window.open('textviewer.html') })()">Document</span>
     <a id="hideSelectedDoc" class="pull-right close" title="Hide this document in matrix">×</a>
     
 
@@ -400,6 +400,7 @@
                                     var n = $(e.target).first().html().replace("topic","");
                                     var t = parseInt(n)-1;
                                     secondchart("topic"+t);
+                                    document.getElementById('topicViewTitle').innerHTML = "Topic "+(t+1);
                               
                         });
                         cols[lo].addEventListener('dblclick', function(e) {
@@ -478,6 +479,8 @@
                 doctosend = docName;
                 localStorage.setItem('current_document', doctosend);
                 var te = document.getElementById("document-content");
+
+                document.getElementById('docViewTitle').innerHTML = doctosend;
                 
                 var table = document.createElement("table");
                 var td = document.createElement("tr");

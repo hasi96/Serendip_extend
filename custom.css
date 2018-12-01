@@ -557,3 +557,7 @@ body.body-inverse .container-absolute .row-fluid > *[class*="span"] {
     color: #777777;
     text-shadow: 0 1px 0 #ffffff;
     }
+
+    #docViewTitle:hover{
+        cursor: pointer;
+    }
