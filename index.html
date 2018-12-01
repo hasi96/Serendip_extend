@@ -20,7 +20,7 @@
     </style>
 </head>
 
-<body onLoad="buildHtmlTable('#demo',[],-1)" class = "debug" data-gr-c-s-loaded = "true">
+<body onLoad="getOption()" class = "debug" data-gr-c-s-loaded = "true">
     <div class="navbar  navbar-fixed-top">
         <div class="navbar-inner">
             <a class="brand" href="#">Serendip : Implementation and Extension</a>
@@ -116,15 +116,20 @@
         </div>
         </div>
             <script>
-            var dataset = "NewsArticles";
 
+            var dataset = "NewsArticles Dataset";
+             $('#demo').fadeOut('slow');
+            localStorage.setItem('dataset', dataset);
+            $('#demo').fadeIn('fast');
             function getOption() {
                 var obj = document.getElementById("mySelect");
                 dataset = obj.options[obj.selectedIndex].text;
                 $('#demo').fadeOut('slow');
                 $('#demo').empty();
                 localStorage.setItem('dataset', dataset);
-
+                 $("#demo").tableDnD();
+                $("#demo").tableDnDUpdate();
+                $('#demo').dragtable();
                 buildHtmlTable('#demo', [], -1);
                  $("#demo").tableDnD();
                 $("#demo").tableDnDUpdate();
@@ -293,6 +298,9 @@
                             return d.value;
                         });
                         setTimeout(myFun, 1000);
+                         $("#demo").tableDnD();
+                $("#demo").tableDnDUpdate();
+                $('#demo').dragtable();
                 });
             }
 
@@ -381,28 +389,52 @@
 
                         $(selector).append(row$);
                     }
-                    var ths = $('th').each(function() {
-                        var ths = this;
+                    var cols = document.getElementsByTagName("th");
+                        $("#demo").tableDnD();
+                $("#demo").tableDnDUpdate();
+                $('#demo').dragtable();
+                    for(var lo = 0;lo<cols.length;lo++){
                         var prevent = false;
-
-                        ths.addEventListener('click', function(e) {
-                            timer = setTimeout(function() {
-                                if (!prevent) {
+                        cols[lo].addEventListener('click', function(e) {
                                     
                                     var n = $(e.target).first().html().replace("topic","");
                                     var t = parseInt(n)-1;
                                     secondchart("topic"+t);
-                                }
-                                prevent = false;
-                            }, delay);
+                              
                         });
-                        ths.addEventListener('dblclick', function(e) {
-                            clearTimeout(timer);
-                            prevent = true;
+                        cols[lo].addEventListener('dblclick', function(e) {
+                            
                             topicSelected($(e.target).first().html(), myList);
                         });
 
-                    });
+
+                           
+                    }
+
+                    // var th = $('th').each(function(index) {
+                        
+                    //     var ths = this;
+                    //     var prevent = false;
+
+                    //     ths.addEventListener('click', function(e) {
+                    //         timer = setTimeout(function() {
+                    //             if (!prevent) {
+                                    
+                    //                 var n = $(e.target).first().html().replace("topic","");
+                    //                 var t = parseInt(n)-1;
+                    //                 secondchart("topic"+t);
+                    //             }
+                    //             prevent = false;
+                    //         }, delay);
+                    //     });
+                    //     ths.addEventListener('dblclick', function(e) {
+                    //         clearTimeout(timer);
+                    //         prevent = true;
+                    //         topicSelected($(e.target).first().html(), myList);
+                    //     });
+
+                    // });
+                      
 
                 });
 
@@ -414,6 +446,7 @@
             // Need to do union of keys from all records as some records may not contain
             // all records.
             function addAllColumnHeaders(rowHash, selector) {
+                console.log(rowHash);
                 var columnSet = [];
                 var headerTr$ = $('<tr/>');
                 //for (var i = 0; i < myList.length; i++) {
